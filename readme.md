@@ -1,3 +1,3 @@
 # Modelling of the OlivoCerebellar system
 
-All files present to run simulations
+All that is needed for simulation of the olivocerebellar system
