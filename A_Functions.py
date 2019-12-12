@@ -53,9 +53,9 @@ def NoiseGenerator(number,noisetype,IC,duration,name,sima):
         sigma : amp
         weight : 1
         '''
-        Noise = NeuronGroup(N_noise, eqs, threshold='True', method='euler', name='Noise', dt=1*ms)
+        Noise = NeuronGroup(N_noise, eqs, threshold='True', method='euler', name='Noise', dt=0.025*ms)
 
-        Noise_statemon = StateMonitor(Noise, variables=['I'], record=True, dt=1*ms)
+        Noise_statemon = StateMonitor(Noise, variables=['I'], record=True, dt=0.025*ms)
         Noise.I0 = IC[0] * nA  # rand_params(1.5,nA,N_noise,0.4)
         Noise.I = IC[1] * nA  # rand_params(1.5,nA,N_noise,0.3)
         Noise.sigma = IC[2] * nA  # rand_params(0.5,nA,N_noise,-0.3)
@@ -70,9 +70,9 @@ def NoiseGenerator(number,noisetype,IC,duration,name,sima):
                 sine2_amplitude : amp
                 sine2_frequency : Hz
                 '''
-        Noise = NeuronGroup(N_noise, eqs, threshold='True', method='euler', name='Noise', dt=1*ms)
+        Noise = NeuronGroup(N_noise, eqs, threshold='True', method='euler', name='Noise', dt=0.025*ms)
 
-        Noise_statemon = StateMonitor(Noise, variables=['I'], record=True, dt=1 * ms)
+        Noise_statemon = StateMonitor(Noise, variables=['I'], record=True, dt=0.025 * ms)
 
         # initial condition
         Noise.sine_amplitude = IC[0] * nA
