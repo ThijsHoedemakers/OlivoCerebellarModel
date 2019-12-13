@@ -18,7 +18,7 @@ A_IO = -1/float(exp_runtime/msecond)#Apre*taupre/taupost*1.05
 n_Noise = len(Noise)
 n_PC = len(PC_Coupled_STDP)
 conn_N_PC_Coupled = NeuronGroup(n_Noise*n_PC, eqs_syn_Noise_PC_STDP, method='euler',name = 'dummy_Coupled',dt=t_Neuron)
-mon_N_PC_Coupled = StateMonitor(conn_N_PC_Coupled , ['a_PC','a_IO','noise_source','PC_target','weight','I','delta_weight','new_weight'], record=True)
+mon_N_PC_Coupled = StateMonitor(conn_N_PC_Coupled , ['a_PC','a_IO','noise_source','PC_target','weight','I','delta_weight','new_weight'], record=True, dt=t_Monitor)
 # Set up the labels
 conn_N_PC_Coupled.noise_source = 'i // n_PC'  # i.e., 0, 0, 1, 1, 2, 2, ...
 conn_N_PC_Coupled.PC_target = 'i % n_Noise' # i.e., 0, 1, 2, 3, 4, 0, 1, ...
