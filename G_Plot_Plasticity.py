@@ -52,7 +52,7 @@ if plotting == 'yes':
     
     for pp in range(0,N_Cells_PC,1):    
         DCN_spikes_Coupled_STDP = DCN_Statemon_Coupled_STDP.v[:]
-        Times_DCN_Coupled_STDP = DCN_Spikemon_Coupled_STDP.values('t')[pp]/(0.025*ms)
+        Times_DCN_Coupled_STDP = DCN_Spikemon_Coupled_STDP.values('t')[pp]/(dt)
         print("Number of spikes DCN: %s"% np.size(Times_DCN_Coupled_STDP))
     
 #     for pp in range(0,N_Cells_PC,1):    
@@ -149,7 +149,7 @@ if plotting == 'yes':
 
     for pp in range(0,N_Cells_PC,1):    
         DCN_spikes_Uncoupled_STDP = DCN_Statemon_Uncoupled_STDP.v[:]
-        Times_DCN_Uncoupled_STDP = DCN_Spikemon_Uncoupled_STDP.values('t')[pp]/(0.025*ms)
+        Times_DCN_Uncoupled_STDP = DCN_Spikemon_Uncoupled_STDP.values('t')[pp]/(dt)
         print("Number of spikes DCN: %s"% np.size(Times_DCN_Uncoupled_STDP))
         
 #     for pp in range(0,N_Cells_PC,1):    
