@@ -37,6 +37,10 @@ def rand_params(Parameter,Unit,N_Cells,Step):
 
 def NoiseGenerator(number,noisetype,IC,duration,name,sima):
     N_noise = number
+    global t_Neuron 
+    t_Neuron=0.025*ms
+    global t_Monitor 
+    t_Monitor=1*ms
     global simpar
     simpar=sima
     global globname
@@ -53,9 +57,9 @@ def NoiseGenerator(number,noisetype,IC,duration,name,sima):
         sigma : amp
         weight : 1
         '''
-        Noise = NeuronGroup(N_noise, eqs, threshold='True', method='euler', name='Noise', dt=0.025*ms)
+        Noise = NeuronGroup(N_noise, eqs, threshold='True', method='euler', name='Noise', dt=t_Neuron)
 
-        Noise_statemon = StateMonitor(Noise, variables=['I'], record=True, dt=0.025*ms)
+        Noise_statemon = StateMonitor(Noise, variables=['I'], record=True, dt=t_Neuron)
         Noise.I0 = IC[0] * nA  # rand_params(1.5,nA,N_noise,0.4)
         Noise.I = IC[1] * nA  # rand_params(1.5,nA,N_noise,0.3)
         Noise.sigma = IC[2] * nA  # rand_params(0.5,nA,N_noise,-0.3)
@@ -70,16 +74,16 @@ def NoiseGenerator(number,noisetype,IC,duration,name,sima):
                 sine2_amplitude : amp
                 sine2_frequency : Hz
                 '''
-        Noise = NeuronGroup(N_noise, eqs, threshold='True', method='euler', name='Noise', dt=0.025*ms)
+        Noise = NeuronGroup(N_noise, eqs, threshold='True', method='euler', name='Noise', dt=t_Neuron)
 
-        Noise_statemon = StateMonitor(Noise, variables=['I'], record=True, dt=0.025 * ms)
+        Noise_statemon = StateMonitor(Noise, variables=['I'], record=True, dt=t_Neuron)
 
         # initial condition
         Noise.sine_amplitude = IC[0] * nA
-        Noise.sine_frequency = IC[1] * Hz * 2 * pi
+        Noise.sine_frequency = IC[1] * 2 * pi * Hz
         # F and A of sine#2
         Noise.sine2_amplitude = IC[2] * nA
-        Noise.sine2_frequency = IC[3] * Hz * 2 * pi
+        Noise.sine2_frequency = IC[3] * 2 * pi * Hz
     elif noisetype == 'const' :
         print('Noise is of constant input')
         constValue = IC[0] *nA
@@ -102,7 +106,7 @@ def NoiseGenerator(number,noisetype,IC,duration,name,sima):
     Noise_created.I = Noise_statemon.I
 
     #local = datetime.datetime.now()
-    #sio.savemat(namesp, mdict={name: Noise_created})
+    sio.savemat(namesp, mdict={'Noise_created': Noise_created})
     print('Data is saved')
     #Noise_mat = Noise_created
     #Noise = Noise_mat[0][0]
