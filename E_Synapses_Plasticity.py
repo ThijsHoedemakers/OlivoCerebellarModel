@@ -8,7 +8,7 @@ from D_NeuronGroups_Plasticity import *
 ############################ Synapses ###############################
 #####################################################################
 tau_PC = 20*ms
-tau_IO = 20*ms
+tau_IO = 60*ms
 wmax = 0.3
 A_PC = 1/float(exp_runtime/msecond)
 A_IO = -1/float(exp_runtime/msecond)#Apre*taupre/taupost*1.05
@@ -25,14 +25,29 @@ conn_N_PC_Coupled.PC_target = 'i % n_Noise' # i.e., 0, 1, 2, 3, 4, 0, 1, ...
 conn_N_PC_Coupled.conn_target = 'i % n_PC' # i.e., 0, 1, 0, 1, 0, 1, 0, 1, 0, 1
 conn_N_PC_Coupled.indx = 'conn_target+(10*rand())'
 # Set the static weight in some way (can refer to noise_source and PC_target)
+#original
 conn_N_PC_Coupled.weight = '1-(abs(((conn_target-noise_source)/N_Cells_PC)))'
+#print(dir(conn_N_PC_Coupled.weight))
+
+# reshape the values to a matrix of size [#input #PC]
+norm_coupled=conn_N_PC_Coupled.weight[:].reshape(n_Noise,n_PC)
+# calculate the sum of the column
+column_sum= norm_coupled.sum(axis=0)
+# normalize by the weight of the columns
+reshaped_weight = norm_coupled/ column_sum[np.newaxis,:]
+# reshape it to the form of 'conn_N_PC_Coupled.weight'
+reshaped_weight = reshaped_weight.reshape(n_Noise*n_PC)
+
+conn_N_PC_Coupled.weight=reshaped_weight
+#all_weights.reshape(n_PC,n_Noise)
+#print(all_weights)
 # "Synapses" to copy over the noise current
 copy_noise_Coupled = Synapses(Noise_extended, conn_N_PC_Coupled, 'I_post = I_pre : amp (summed)')
 # "connect if noise source label matches source index":
 copy_noise_Coupled.connect('noise_source_post == i')
 
 ## uncomment to see connectivity Noise-Dummyneuron
-visualise(copy_noise_Coupled)
+#visualise(copy_noise_Coupled)
 print(conn_N_PC_Coupled.weight)
 # Synapses to Purkinje cells
 S_N_PC_Coupled = Synapses(conn_N_PC_Coupled, PC_Coupled_STDP,'''    
@@ -122,6 +137,16 @@ conn_N_PC_Uncoupled.conn_target = 'i % n_PC' # i.e., 0, 1, 0, 1, 0, 1, 0, 1, 0, 
 conn_N_PC_Uncoupled.indx = 'conn_target+(10*rand())'
 # Set the static weight in some way (can refer to noise_source and PC_target)
 conn_N_PC_Uncoupled.weight = 'abs(1-(abs(((conn_target-noise_source)/N_Cells_PC))))'
+
+norm_uncoupled=conn_N_PC_Uncoupled.weight[:].reshape(n_Noise,n_PC)
+# calculate the sum of the column
+column_sumun= norm_uncoupled.sum(axis=0)
+# normalize by the weight of the columns
+reshaped_weightun = norm_uncoupled/ column_sumun[np.newaxis,:]
+# reshape it to the form of 'conn_N_PC_Coupled.weight'
+reshaped_weightun = reshaped_weightun.reshape(n_Noise*n_PC)
+
+conn_N_PC_Uncoupled.weight=reshaped_weightun
 # "Synapses" to copy over the noise current
 copy_noise_Uncoupled = Synapses(Noise_extended, conn_N_PC_Uncoupled, 'I_post = I_pre : amp (summed)')
 # "connect if noise source label matches source index":
