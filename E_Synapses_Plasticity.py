@@ -27,7 +27,6 @@ conn_N_PC_Coupled.indx = 'conn_target+(10*rand())'
 # Set the static weight in some way (can refer to noise_source and PC_target)
 #original
 conn_N_PC_Coupled.weight = '1-(abs(((conn_target-noise_source)/N_Cells_PC)))'
-#print(dir(conn_N_PC_Coupled.weight))
 
 # reshape the values to a matrix of size [#input #PC]
 norm_coupled=conn_N_PC_Coupled.weight[:].reshape(n_Noise,n_PC)
@@ -47,8 +46,9 @@ copy_noise_Coupled = Synapses(Noise_extended, conn_N_PC_Coupled, 'I_post = I_pre
 copy_noise_Coupled.connect('noise_source_post == i')
 
 ## uncomment to see connectivity Noise-Dummyneuron
-#visualise(copy_noise_Coupled)
-print(conn_N_PC_Coupled.weight)
+visualise(copy_noise_Coupled)
+#print(conn_N_PC_Coupled.weight)
+
 # Synapses to Purkinje cells
 S_N_PC_Coupled = Synapses(conn_N_PC_Coupled, PC_Coupled_STDP,'''    
                                     I_Noise_post = (1.0/n_Noise)*(new_weight_pre)*I_pre : amp (summed)''',
