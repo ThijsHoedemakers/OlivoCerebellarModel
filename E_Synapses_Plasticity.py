@@ -46,7 +46,7 @@ copy_noise_Coupled = Synapses(Noise_extended, conn_N_PC_Coupled, 'I_post = I_pre
 copy_noise_Coupled.connect('noise_source_post == i')
 
 ## uncomment to see connectivity Noise-Dummyneuron
-visualise(copy_noise_Coupled)
+#visualise(copy_noise_Coupled)
 #print(conn_N_PC_Coupled.weight)
 
 # Synapses to Purkinje cells
