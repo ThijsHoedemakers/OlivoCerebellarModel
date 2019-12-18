@@ -25,6 +25,7 @@ PV.delta = mon_N_PC_Coupled.delta_weight
 ### Noise input
 Noise = Struct()
 Noise.I=Noise_extended_statemon.I
+Noise.nweight = mon_N_PC_Coupled.new_weight
 
 ### Voltage of Cell
 VoltCell = Struct()
