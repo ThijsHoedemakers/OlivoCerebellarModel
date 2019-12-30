@@ -27,11 +27,12 @@ conn_N_PC_Coupled.indx = 'conn_target+(10*rand())'
 # Set the static weight in some way (can refer to noise_source and PC_target)
 #original
 conn_N_PC_Coupled.weight = '1-(abs(((conn_target-noise_source)/N_Cells_PC)))'
-
+print('weights before', conn_N_PC_Coupled.weight)
 # reshape the values to a matrix of size [#input #PC]
 norm_coupled=conn_N_PC_Coupled.weight[:].reshape(n_Noise,n_PC)
 # calculate the sum of the column
 column_sum= norm_coupled.sum(axis=0)
+print('column sum =', column_sum)
 # normalize by the weight of the columns
 reshaped_weight = norm_coupled/ column_sum[np.newaxis,:]
 # reshape it to the form of 'conn_N_PC_Coupled.weight'
@@ -47,11 +48,17 @@ copy_noise_Coupled.connect('noise_source_post == i')
 
 ## uncomment to see connectivity Noise-Dummyneuron
 #visualise(copy_noise_Coupled)
-#print(conn_N_PC_Coupled.weight)
+print('new weights', conn_N_PC_Coupled.weight)
 
 # Synapses to Purkinje cells
+# original
+#S_N_PC_Coupled = Synapses(conn_N_PC_Coupled, PC_Coupled_STDP,'''    
+#                                    I_Noise_post = (1.0/n_Noise)*(new_weight_pre)*I_pre : amp (summed)''',
+#                            on_post='a_PC_pre += A_PC', method='euler',name = 'dummy_PC_Coupled',dt=t_Neuron)
+
+# removed (1.0/n_Noise) since it is already normalized in the previous step
 S_N_PC_Coupled = Synapses(conn_N_PC_Coupled, PC_Coupled_STDP,'''    
-                                    I_Noise_post = (1.0/n_Noise)*(new_weight_pre)*I_pre : amp (summed)''',
+                                    I_Noise_post = (new_weight_pre)*I_pre : amp (summed)''',
                             on_post='a_PC_pre += A_PC', method='euler',name = 'dummy_PC_Coupled',dt=t_Neuron)
 # "connect if PC target label matches target index":
 S_N_PC_Coupled.connect('conn_target_pre == j')
@@ -153,14 +160,18 @@ copy_noise_Uncoupled = Synapses(Noise_extended, conn_N_PC_Uncoupled, 'I_post = I
 copy_noise_Uncoupled.connect('noise_source_post == i')
 
 # Synapses to Purkinje cells
+#S_N_PC_Uncoupled = Synapses(conn_N_PC_Uncoupled, PC_Uncoupled_STDP,'''    
+#                                    I_Noise_post = (1.0/n_Noise)*(new_weight_pre)*I_pre : amp (summed)''',
+#                            on_post='a_PC_pre += A_PC', method='euler',name = 'dummy_PC_Uncoupled',dt=dt)
+
 S_N_PC_Uncoupled = Synapses(conn_N_PC_Uncoupled, PC_Uncoupled_STDP,'''    
-                                    I_Noise_post = (1.0/n_Noise)*(new_weight_pre)*I_pre : amp (summed)''',
+                                    I_Noise_post = (new_weight_pre)*I_pre : amp (summed)''',
                             on_post='a_PC_pre += A_PC', method='euler',name = 'dummy_PC_Uncoupled',dt=dt)
 # "connect if PC target label matches target index":
 S_N_PC_Uncoupled.connect('conn_target_pre == j')
 
 # LTD from IO cells:
-S_IO_N_Uncoupled = Synapses(IO_Uncoupled_STDP, conn_N_PC_Uncoupled, on_pre='a_IO_post += A_IO*(new_weight_post*I_post)/nA', method='euler',name = 'dummy_IO_Uncoupled',dt=dt)  # where f is some function
+S_IO_N_Uncoupled = Synapses(IO_Uncoupled_STDP, conn_N_PC_Uncoupled, on_pre='a_IO_post += A_IO*abs((new_weight_post*I_post))/nA', method='euler',name = 'dummy_IO_Uncoupled',dt=dt)  # where f is some function
 # weight of all noise-Purkinje synapses:
 # IO_index = random.sample(range(20), 10)
 S_IO_N_Uncoupled.connect(i=IO_index*n_Noise, j=range(len(conn_N_PC_Uncoupled)))
