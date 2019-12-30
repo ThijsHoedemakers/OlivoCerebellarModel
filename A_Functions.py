@@ -87,7 +87,7 @@ def NoiseGenerator(number,noisetype,IC,duration,name,sima):
     elif noisetype == 'const' :
         print('Noise is of constant input')
         constValue = IC[0] *nA
-        dur = int(duration/(0.025*10e-3))
+        dur = int(duration/(0.025))
         Noise_statemon = Struct()
         Noise_statemon.t = np.arange(0, dur)
         Noise_statemon.I = np.full((number,dur), constValue)
