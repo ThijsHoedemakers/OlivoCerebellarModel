@@ -37,6 +37,7 @@ def rand_params(Parameter,Unit,N_Cells,Step):
 
 def NoiseGenerator(number,noisetype,IC,duration,name,sima):
     N_noise = number
+    # create global variables, so they can be used in the other scripts as well
     global t_Neuron 
     t_Neuron=0.025*ms
     global t_Monitor 
@@ -48,6 +49,10 @@ def NoiseGenerator(number,noisetype,IC,duration,name,sima):
     namesp=list(name)
     namesp.append('.mat')
     namesp="".join(namesp)
+    
+    ### Different types of inputs
+    
+    # OhlenbeckUhler? 
     if noisetype == 'OU':
         print('Noise input is of type OU')
         tau_noise = 50 * ms
@@ -63,27 +68,28 @@ def NoiseGenerator(number,noisetype,IC,duration,name,sima):
         Noise.I0 = IC[0] * nA  # rand_params(1.5,nA,N_noise,0.4)
         Noise.I = IC[1] * nA  # rand_params(1.5,nA,N_noise,0.3)
         Noise.sigma = IC[2] * nA  # rand_params(0.5,nA,N_noise,-0.3)
+        
+        # Double sine
     elif noisetype == 'DS':
         print('Noise input is of type double sine')
         # Noise double sine
         eqs = '''
-                dI/dt = (sine_amplitude)*sine_frequency*cos(sine_frequency*t)
-                +(sine2_amplitude)*sine2_frequency*cos(sine2_frequency*t) : amp
+                dI/dt = (sine_amplitude)*sine_frequency*cos(sine_frequency*t): amp
                 sine_amplitude : amp
                 sine_frequency: Hz
-                sine2_amplitude : amp
-                sine2_frequency : Hz
                 '''
-        Noise = NeuronGroup(N_noise, eqs, threshold='True', method='euler', name='Noise', dt=t_Neuron)
+        Input = NeuronGroup(N_noise, eqs, threshold='True', method='euler', name='Noise', dt=t_Neuron)
+        Input.sine_amplitude = np.array([IC[2], IC[4]])*nA
+        Input.sine_frequency = np.array([IC[3], IC[5]])*2*pi* Hz
 
-        Noise_statemon = StateMonitor(Noise, variables=['I'], record=True, dt=t_Neuron)
+        Input_statemon = StateMonitor(Input, variables=['I'], record=True, dt=t_Neuron)
 
         # initial condition
-        Noise.sine_amplitude = IC[0] * nA
-        Noise.sine_frequency = IC[1] * 2 * pi * Hz
+        #Noise.sine_amplitude = IC[0] * nA
+        #Noise.sine_frequency = IC[1] * 2 * pi * Hz
         # F and A of sine#2
-        Noise.sine2_amplitude = IC[2] * nA
-        Noise.sine2_frequency = IC[3] * 2 * pi * Hz
+        #Noise.sine2_amplitude = IC[2] * nA
+        #Noise.sine2_frequency = IC[3] * 2 * pi * Hz
     elif noisetype == 'const' :
         print('Noise is of constant input')
         constValue = IC[0] *nA
@@ -100,20 +106,26 @@ def NoiseGenerator(number,noisetype,IC,duration,name,sima):
     run(duration*ms)
 
 
-    Noise_created = Struct()
+    Input_created = Struct()
+    Input_created.time = Input_statemon.t / ms
+    Input_created.I = Input_statemon.I
+    
+    #print('input before offset',Input_created.I)
+    #print(Input_created.I[0])
+    Input_created.I[0] = Input_created.I[0]+np.ones(len(Input_created.I[0]))*IC[0]*nA
+    Input_created.I[1] = Input_created.I[1]+np.ones(len(Input_created.I[1]))*IC[1]*nA
 
-    Noise_created.time = Noise_statemon.t / ms
-    Noise_created.I = Noise_statemon.I
+    
 
     #local = datetime.datetime.now()
-    sio.savemat(namesp, mdict={'Noise_created': Noise_created})
+    sio.savemat(namesp, mdict={'Input_created': Input_created})
     print('Data is saved')
     #Noise_mat = Noise_created
     #Noise = Noise_mat[0][0]
     global Noise_t 
-    Noise_t= Noise_created.time
+    Noise_t= Input_created.time
     global Noise_I 
-    Noise_I = Noise_created.I
+    Noise_I = Input_created.I
     Noise_I = numpy.ascontiguousarray(Noise_I, dtype=np.float64)
     global N_Noise 
     N_Noise = len(Noise_I)
