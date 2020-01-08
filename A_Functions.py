@@ -47,7 +47,7 @@ def NoiseGenerator(number,noisetype,IC,duration,name,sima):
     global globname
     globname = name
     namesp=list(name)
-    namesp.append('.mat')
+    namesp.append('BeforeSim.mat')
     namesp="".join(namesp)
     
     ### Different types of inputs

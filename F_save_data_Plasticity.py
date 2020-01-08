@@ -7,7 +7,7 @@ param = list(globname)
 spikes = list(globname)
 nois = list(globname)
 #add the new words
-nois.append('.mat')
+nois.append('AfterSim.mat')
 volt.append('_VoltageCell.mat')
 param.append('_PlasticityVariables.mat')
 spikes.append('_SpikeTimes.mat')
@@ -23,9 +23,9 @@ PV.a_IO = mon_N_PC_Coupled.a_IO
 PV.delta = mon_N_PC_Coupled.delta_weight
 
 ### Noise input
-Noise = Struct()
-Noise.I=Noise_extended_statemon.I
-Noise.nweight = mon_N_PC_Coupled.new_weight
+Input = Struct()
+Input.I=Noise_extended_statemon.I
+Input.nweight = mon_N_PC_Coupled.new_weight
 
 ### Voltage of Cell
 VoltCell = Struct()
@@ -44,7 +44,7 @@ SpikeTimes.IO = list(IO_Spikemon_Coupled_STDP.spike_trains().values())
 #f.write( str(SpikeTimes) )
 #f.close() 
 ### 
-sio.savemat(nois, mdict={'Noise':Noise})
+sio.savemat(nois, mdict={'Input':Input})
 sio.savemat(volt, mdict={'VoltCell':VoltCell})
 sio.savemat(param, mdict={'PV':PV})
 sio.savemat(spikes, mdict={'SpikeTimes':SpikeTimes})
