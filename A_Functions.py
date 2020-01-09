@@ -79,8 +79,8 @@ def NoiseGenerator(number,noisetype,IC,duration,name,sima):
                 sine_frequency: Hz
                 '''
         Input = NeuronGroup(N_noise, eqs, threshold='True', method='euler', name='Noise', dt=t_Neuron)
-        Input.sine_amplitude = np.array([IC[2], IC[4]])*nA
-        Input.sine_frequency = np.array([IC[3], IC[5]])*2*pi* Hz
+        Input.sine_amplitude = np.array([IC[5], IC[6], IC[7], IC[8],IC[9]])*nA
+        Input.sine_frequency = np.array([IC[10], IC[11],IC[12],IC[13],IC[14]])*2*pi* Hz
 
         Input_statemon = StateMonitor(Input, variables=['I'], record=True, dt=t_Neuron)
 
@@ -114,7 +114,9 @@ def NoiseGenerator(number,noisetype,IC,duration,name,sima):
     #print(Input_created.I[0])
     Input_created.I[0] = Input_created.I[0]+np.ones(len(Input_created.I[0]))*IC[0]*nA
     Input_created.I[1] = Input_created.I[1]+np.ones(len(Input_created.I[1]))*IC[1]*nA
-
+    Input_created.I[2] = Input_created.I[2]+np.ones(len(Input_created.I[2]))*IC[2]*nA
+    Input_created.I[3] = Input_created.I[3]+np.ones(len(Input_created.I[3]))*IC[3]*nA   
+    Input_created.I[4] = Input_created.I[4]+np.ones(len(Input_created.I[4]))*IC[4]*nA
     
 
     #local = datetime.datetime.now()
