@@ -57,6 +57,7 @@ conn_N_PC_Coupled.weight = '1-(abs(((conn_target-noise_source)/N_Cells_PC)))'
 print('weights before', conn_N_PC_Coupled.weight)
 # reshape the values to a matrix of size [#input #PC]
 norm_coupled=conn_N_PC_Coupled.weight[:].reshape(n_Noise,n_PC)
+print('reshaped weigth',norm_coupled)
 # calculate the sum of the column
 column_sum= norm_coupled.sum(axis=0)
 print('column sum =', column_sum)
