@@ -47,7 +47,7 @@ def NoiseGenerator(number,noisetype,IC,duration,name,sima):
     global globname
     globname = name
     namesp=list(name)
-    namesp.append('BeforeSim.mat')
+    namesp.append('BeforeSim.pickle')
     namesp="".join(namesp)
     
     ### Different types of inputs
@@ -79,8 +79,10 @@ def NoiseGenerator(number,noisetype,IC,duration,name,sima):
                 sine_frequency: Hz
                 '''
         Input = NeuronGroup(N_noise, eqs, threshold='True', method='euler', name='Noise', dt=t_Neuron)
-        Input.sine_amplitude = np.array([IC[5], IC[6], IC[7], IC[8],IC[9]])*nA
-        Input.sine_frequency = np.array([IC[10], IC[11],IC[12],IC[13],IC[14]])*2*pi* Hz
+        Input.sine_amplitude = np.array(IC[number:(number+number)])*nA
+        #Input.sine_amplitude = np.array([IC[5], IC[6], IC[7], IC[8],IC[9]])*nA
+        Input.sine_frequency = np.array(IC[number*2:])*2*pi*Hz
+        #Input.sine_frequency = np.array([IC[10], IC[11],IC[12],IC[13],IC[14]])*2*pi* Hz
 
         Input_statemon = StateMonitor(Input, variables=['I'], record=True, dt=t_Neuron)
 
@@ -106,31 +108,36 @@ def NoiseGenerator(number,noisetype,IC,duration,name,sima):
     run(duration*ms)
 
 
-    Input_created = Struct()
-    Input_created.time = Input_statemon.t / ms
-    Input_created.I = Input_statemon.I
+    #Input_created = Struct()
+    #Input_created.time = Input_statemon.t / ms
+    #Input_created.I = Input_statemon.I
     
     #print('input before offset',Input_created.I)
     #print(Input_created.I[0])
-    Input_created.I[0] = Input_created.I[0]+np.ones(len(Input_created.I[0]))*IC[0]*nA
-    Input_created.I[1] = Input_created.I[1]+np.ones(len(Input_created.I[1]))*IC[1]*nA
-    Input_created.I[2] = Input_created.I[2]+np.ones(len(Input_created.I[2]))*IC[2]*nA
-    Input_created.I[3] = Input_created.I[3]+np.ones(len(Input_created.I[3]))*IC[3]*nA   
-    Input_created.I[4] = Input_created.I[4]+np.ones(len(Input_created.I[4]))*IC[4]*nA
-    
-
+    Is = Input_statemon.I
+    for ii in range(0,number):
+        Is[ii] = Is[ii]+np.ones(len(Is[ii]))*IC[ii]*nA
+    #Is[1] = Is[1]+np.ones(len(Is[1]))*IC[1]*nA
+    #Is[2] = Input_created.I[2]+np.ones(len(Input_created.I[2]))*IC[2]*nA
+    #Input_statemon.I[3] = Input_created.I[3]+np.ones(len(Input_created.I[3]))*IC[3]*nA   
+    #Input_statemon.I[4] = Input_created.I[4]+np.ones(len(Input_created.I[4]))*IC[4]*nA
+    #print(Is)
+    Input_created = {'I':asarray(Is),'time':asarray(Input_statemon.t)}
+    #print(Input_created)
     #local = datetime.datetime.now()
-    sio.savemat(namesp, mdict={'Input_created': Input_created})
-    print('Data is saved')
+    #sio.savemat(namesp, mdict={'Input_created': Input_created})
+    with open(namesp, 'wb') as nn:
+        pickle.dump(Input_created, nn, pickle.HIGHEST_PROTOCOL)
+        print('Data is saved')
     #Noise_mat = Noise_created
     #Noise = Noise_mat[0][0]
     global Noise_t 
-    Noise_t= Input_created.time
+    Noise_t= Input_created['time']
     global Noise_I 
-    Noise_I = Input_created.I
+    Noise_I = Input_created['I']
     Noise_I = numpy.ascontiguousarray(Noise_I, dtype=np.float64)
     global N_Noise 
-    N_Noise = len(Noise_I)
+    N_Noise = number
 
     return Noise_t,Noise_I,N_Noise
 

@@ -7,7 +7,7 @@ from C_Equations import *
 #####################################################################
 ########################### PURKINJE CELLS ##########################
 #####################################################################
-PC_Coupled_noSTDP = NeuronGroup(N_Cells_PC, model=PC_Equations, threshold='v>Vcut', reset="v=Vr; w+=b", method='euler', name = 'PC_Coupled_noSTDP',dt=dt)
+PC_Coupled_noSTDP = NeuronGroup(N_Cells_PC, model=PC_Equations, threshold='v>Vcut', reset="v=Vr; w+=b", method='euler', name = 'PC_Coupled_noSTDP',dt=t_Neuron)
 for jj in range(0,N_Cells_PC,1):
     PC_Coupled_noSTDP.C[jj] = PC_C[jj]
     PC_Coupled_noSTDP.gL[jj] = PC_gL[jj]
@@ -22,13 +22,13 @@ for jj in range(0,N_Cells_PC,1):
     PC_Coupled_noSTDP.I_Noise[jj] = 0.9*nA
     PC_Coupled_noSTDP.v[jj] = PC_v[jj]
     PC_Coupled_noSTDP.I_intrinsic[jj] = PC_I_intrinsic[jj]
-PC_Statemon_Coupled_noSTDP = StateMonitor(PC_Coupled_noSTDP, ['v', 'w', 'I_Noise','I_intrinsic','tauw'], record=True,dt=dt)
+PC_Statemon_Coupled_noSTDP = StateMonitor(PC_Coupled_noSTDP, ['v', 'w', 'I_Noise','I_intrinsic','tauw'], record=True,dt=t_Monitor)
 PC_Spikemon_Coupled_noSTDP = SpikeMonitor(PC_Coupled_noSTDP)
 PC_rate_Coupled_noSTDP = PopulationRateMonitor(PC_Coupled_noSTDP)
 #####################################################################
 ###################### INFERIOR OLIVARY CELLS #######################
 #####################################################################
-IO_Coupled_noSTDP = NeuronGroup(N_Cells_IO, model = eqs_IO, threshold='Vs>20*mV' , method = 'euler',name = 'SchweighoferOlive_Coupled_noSTDP',dt=0.025*ms)
+IO_Coupled_noSTDP = NeuronGroup(N_Cells_IO, model = eqs_IO, threshold='Vs>20*mV' , method = 'euler',name = 'SchweighoferOlive_Coupled_noSTDP',dt=t_Neuron)
 for ii in range(0, N_Cells_IO, 1):
     IO_Coupled_noSTDP.V_Na[ii] = IO_V_Na[ii]
     IO_Coupled_noSTDP.V_K[ii] = IO_V_K[ii]
@@ -51,13 +51,13 @@ for ii in range(0, N_Cells_IO, 1):
     IO_Coupled_noSTDP.p[ii] = IO_p[ii]
     IO_Coupled_noSTDP.p2[ii] = IO_p2[ii]
     IO_Coupled_noSTDP.g_Ca_l[ii] =  IO_g_Ca_l[ii]
-IO_Statemon_Coupled_noSTDP = StateMonitor(IO_Coupled_noSTDP, variables = ['Vs','Vd', 'I_IO_DCN','I_c'], record = True, dt=dt)
+IO_Statemon_Coupled_noSTDP = StateMonitor(IO_Coupled_noSTDP, variables = ['Vs','Vd', 'I_IO_DCN','I_c'], record = True, dt=t_Monitor)
 IO_Spikemon_Coupled_noSTDP = SpikeMonitor(IO_Coupled_noSTDP)
 IO_rate_Coupled_noSTDP = PopulationRateMonitor(IO_Coupled_noSTDP)
 #####################################################################
 ################### DEEP CEREBELLAR NUCLEI CELLS ####################
 #####################################################################
-DCN_Coupled_noSTDP = NeuronGroup(N_Cells_DCN, model=DCN_Equations, threshold='v>Vcut', reset="v=Vr; w+=b", method='euler', name = 'DCN_Coupled_noSTDP',dt=dt)
+DCN_Coupled_noSTDP = NeuronGroup(N_Cells_DCN, model=DCN_Equations, threshold='v>Vcut', reset="v=Vr; w+=b", method='euler', name = 'DCN_Coupled_noSTDP',dt=t_Neuron)
 for dd in range(0,N_Cells_DCN,1):    
     DCN_Coupled_noSTDP.C[dd] = DCN_C[dd]
     DCN_Coupled_noSTDP.gL[dd] = DCN_gL[dd]
@@ -74,7 +74,7 @@ for dd in range(0,N_Cells_DCN,1):
     DCN_Coupled_noSTDP.v[dd] = DCN_v[dd]
     DCN_Coupled_noSTDP.I_intrinsic[dd] = DCN_I_intrinsic[dd]
 ######### Monitors ###############
-DCN_Statemon_Coupled_noSTDP = StateMonitor(DCN_Coupled_noSTDP, ['v', 'I_PC','w'], record=True,dt=0.025*ms)
+DCN_Statemon_Coupled_noSTDP = StateMonitor(DCN_Coupled_noSTDP, ['v', 'I_PC','w'], record=True,dt=t_Monitor)
 DCN_Spikemon_Coupled_noSTDP = SpikeMonitor(DCN_Coupled_noSTDP)
 DCN_rate_Coupled_noSTDP = PopulationRateMonitor(DCN_Coupled_noSTDP)
 ###########################################################################################################################
@@ -85,7 +85,7 @@ DCN_rate_Coupled_noSTDP = PopulationRateMonitor(DCN_Coupled_noSTDP)
 #####################################################################
 ########################### PURKINJE CELLS ##########################
 #####################################################################
-PC_Uncoupled_noSTDP = NeuronGroup(N_Cells_PC, model=PC_Equations, threshold='v>Vcut', reset="v=Vr; w+=b", method='euler', name = 'PC_Uncoupled_noSTDP',dt=dt)
+PC_Uncoupled_noSTDP = NeuronGroup(N_Cells_PC, model=PC_Equations, threshold='v>Vcut', reset="v=Vr; w+=b", method='euler', name = 'PC_Uncoupled_noSTDP',dt=t_Neuron)
 for jj in range(0,N_Cells_PC,1):
     PC_Uncoupled_noSTDP.C[jj] = PC_C[jj]
     PC_Uncoupled_noSTDP.gL[jj] = PC_gL[jj]
@@ -100,13 +100,13 @@ for jj in range(0,N_Cells_PC,1):
     PC_Uncoupled_noSTDP.I_Noise[jj] = 0.9*nA
     PC_Uncoupled_noSTDP.v[jj] = PC_v[jj]
 PC_Uncoupled_noSTDP.I_intrinsic = PC_I_intrinsic
-PC_Statemon_Uncoupled_noSTDP = StateMonitor(PC_Uncoupled_noSTDP, ['v', 'w', 'I_Noise','I_intrinsic','tauw'], record=True,dt=dt)
+PC_Statemon_Uncoupled_noSTDP = StateMonitor(PC_Uncoupled_noSTDP, ['v', 'w', 'I_Noise','I_intrinsic','tauw'], record=True,dt=t_Monitor)
 PC_Spikemon_Uncoupled_noSTDP = SpikeMonitor(PC_Uncoupled_noSTDP)
 PC_rate_Uncoupled_noSTDP = PopulationRateMonitor(PC_Uncoupled_noSTDP)
 #####################################################################
 ###################### INFERIOR OLIVARY CELLS #######################
 #####################################################################
-IO_Uncoupled_noSTDP = NeuronGroup(N_Cells_IO, model = eqs_IO, threshold='Vs>20*mV' , method = 'euler',name = 'SchweighoferOlive_Uncoupled_noSTDP',dt=dt)
+IO_Uncoupled_noSTDP = NeuronGroup(N_Cells_IO, model = eqs_IO, threshold='Vs>20*mV' , method = 'euler',name = 'SchweighoferOlive_Uncoupled_noSTDP',dt=t_Neuron)
 for ii in range(0, N_Cells_IO, 1):
     IO_Uncoupled_noSTDP.V_Na[ii] = IO_V_Na[ii]
     IO_Uncoupled_noSTDP.V_K[ii] = IO_V_K[ii]
@@ -129,13 +129,13 @@ for ii in range(0, N_Cells_IO, 1):
     IO_Uncoupled_noSTDP.p[ii] = IO_p[ii]
     IO_Uncoupled_noSTDP.p2[ii] = IO_p2[ii]
     IO_Uncoupled_noSTDP.g_Ca_l[ii] =  IO_g_Ca_l[ii]
-IO_Statemon_Uncoupled_noSTDP = StateMonitor(IO_Uncoupled_noSTDP, variables = ['Vs','Vd', 'I_IO_DCN','I_c'], record = True, dt=dt)
+IO_Statemon_Uncoupled_noSTDP = StateMonitor(IO_Uncoupled_noSTDP, variables = ['Vs','Vd', 'I_IO_DCN','I_c'], record = True, dt=t_Monitor)
 IO_Spikemon_Uncoupled_noSTDP = SpikeMonitor(IO_Uncoupled_noSTDP)
 IO_rate_Uncoupled_noSTDP = PopulationRateMonitor(IO_Uncoupled_noSTDP)
 #####################################################################
 ################### DEEP CEREBELLAR NUCLEI CELLS ####################
 #####################################################################
-DCN_Uncoupled_noSTDP = NeuronGroup(N_Cells_DCN, model=DCN_Equations, threshold='v>Vcut', reset="v=Vr; w+=b", method='euler', name = 'DCN_Uncoupled_noSTDP',dt=dt)
+DCN_Uncoupled_noSTDP = NeuronGroup(N_Cells_DCN, model=DCN_Equations, threshold='v>Vcut', reset="v=Vr; w+=b", method='euler', name = 'DCN_Uncoupled_noSTDP',dt=t_Neuron)
 for dd in range(0,N_Cells_DCN,1):    
     DCN_Uncoupled_noSTDP.C[dd] = DCN_C[dd]
     DCN_Uncoupled_noSTDP.gL[dd] = DCN_gL[dd]
@@ -152,6 +152,6 @@ for dd in range(0,N_Cells_DCN,1):
     DCN_Uncoupled_noSTDP.v[dd] = DCN_v[dd]
     DCN_Uncoupled_noSTDP.I_intrinsic[dd] = DCN_I_intrinsic[dd]
 ######### Monitors ###############
-DCN_Statemon_Uncoupled_noSTDP = StateMonitor(DCN_Uncoupled_noSTDP, ['v', 'I_PC','w'], record=True,dt=dt)
+DCN_Statemon_Uncoupled_noSTDP = StateMonitor(DCN_Uncoupled_noSTDP, ['v', 'I_PC','w'], record=True,dt=t_Monitor)
 DCN_Spikemon_Uncoupled_noSTDP = SpikeMonitor(DCN_Uncoupled_noSTDP)
 DCN_rate_Uncoupled_noSTDP = PopulationRateMonitor(DCN_Uncoupled_noSTDP)
