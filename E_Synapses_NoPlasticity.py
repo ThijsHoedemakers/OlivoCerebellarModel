@@ -7,6 +7,8 @@ from D_NeuronGroups_NoPlasticity import *
 #####################################################################
 ############################ Synapses ###############################
 #####################################################################
+n_Noise = len(Noise)
+n_PC = len(PC_Coupled_noSTDP)
 if n_Noise == 5:
     # input-dummy
     i_ind = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4]
@@ -74,7 +76,7 @@ Synapse_IO_PC_Coupled_noSTDP = Synapses(IO_Coupled_noSTDP, PC_Coupled_noSTDP, on
 # Synapse_IO_PC_Coupled_noSTDP.connect('i==j')
 IO_index = random.sample(range(N_Cells_IO), 10)
 #Synapse_IO_PC_Coupled_noSTDP.connect(i=IO_index, j=range(N_Cells_PC))
-Synapse_IO_PC_Coupled_noSTDP.connect(i=i_PCIO, j=j_PCIO)
+Synapse_IO_PC_Coupled_noSTDP.connect(i=i_IOPC, j=j_IOPC)
 
 DCN_PC_Synapse_Coupled_noSTDP = Synapses(PC_Coupled_noSTDP, DCN_Coupled_noSTDP, on_pre='I_PC_post = 1.5*nA', delay=2*ms, name = 'PC_DCN_Synapse_Coupled_noSTDP',dt=t_Neuron) 
 # DCN_PC_Synapse_Coupled_noSTDP.connect(j='k for k in range(i,i+N_Cells_PC+1)')
@@ -97,7 +99,7 @@ for kk in range(N_Cells_PC):
         DCN_PC_Synapse_Coupled_targ.append(kk)
 
 #DCN_PC_Synapse_Coupled_noSTDP.connect(i=DCN_PC_Synapse_Coupled_targ,j=DCN_PC_Synapse_Coupled_mm)
-DCN_PC_Synapse_Coupled_noSTDP.connect(i=i_DCNPC,j=j_DCNPC)
+DCN_PC_Synapse_Coupled_noSTDP.connect(i=i_PCDCN,j=j_PCDCN)
 
 
 IO_DCN_Synapse_Coupled_noSTDP = Synapses(DCN_Coupled_noSTDP, IO_Coupled_noSTDP, on_pre = 'I_IO_DCN_post += -0.05*uA*cm**-2', delay=3*ms, name = 'IO_DCN_Synapse_Coupled_noSTDP', method = 'euler',dt=t_Neuron)
@@ -125,7 +127,7 @@ for kk in range(N_Cells_DCN):
     for ee in range(10):
         IO_DCN_Synapse_Coupled_targ.append(kk)
 #IO_DCN_Synapse_Coupled_noSTDP.connect(i=IO_DCN_Synapse_Coupled_targ,j=IO_DCN_Synapse_Coupled_mm)
-IO_DCN_Synapse_Coupled_noSTDP.connect(i=i_IODCN,j=j_IODCN)
+IO_DCN_Synapse_Coupled_noSTDP.connect(i=i_DCNIO,j=j_DCNIO)
 
 
 IO_synapse_Coupled_noSTDP = Synapses(IO_Coupled_noSTDP, IO_Coupled_noSTDP, eqs_IO_syn_Coupled, name = 'IO_Synapse_Coupled_noSTDP')
@@ -157,7 +159,7 @@ IO_DCN_Synapse_Uncoupled_noSTDP = Synapses(DCN_Uncoupled_noSTDP, IO_Uncoupled_no
 # IO_DCN_Synapse_Uncoupled_noSTDP.connect(j='k for k in range(i-int(N_Cells_IO/2)) if i>int(N_Cells_IO/2)')
 
 #IO_DCN_Synapse_Uncoupled_noSTDP.connect(i=IO_DCN_Synapse_Coupled_targ,j=IO_DCN_Synapse_Coupled_mm)
-IO_DCN_Synapse_Uncoupled_noSTDP.connect(i=i_IODCN,j=j_IODCN)
+IO_DCN_Synapse_Uncoupled_noSTDP.connect(i=i_DCNIO,j=j_DCNIO)
 
 
 eqs_IO_syn_Uncoupled_noSTDP = ''' I_c_pre = (0*mS/cm**2)*(0.6*e**(-((Vd_pre/mvolt-Vd_post/mvolt)/50)**2) + 0.4)*(Vd_pre-Vd_post) : metre**-2*amp (summed)'''
