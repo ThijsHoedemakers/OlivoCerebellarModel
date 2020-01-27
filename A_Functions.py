@@ -33,8 +33,9 @@ def rand_params(Parameter,Unit,N_Cells,Step):
     End = Start + Nn[1]
     Param_vector = [x / float(Base) for x in range(Begin, End, 1)]*Unit
     shuffle(Param_vector)
-    return Param_vector
-
+    return Param_vector 
+    
+    
 def NoiseGenerator(number,noisetype,IC,duration,name,sima):
     N_noise = number
     # create global variables, so they can be used in the other scripts as well
@@ -103,7 +104,8 @@ def NoiseGenerator(number,noisetype,IC,duration,name,sima):
     else:
         print('Input type is not correct; chose OU,DS or const')
         
-        
+    
+    
 
     run(duration*ms)
 
