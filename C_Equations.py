@@ -3,7 +3,7 @@ from B_StartUp import *
 ############################ Input Noise ############################
 #####################################################################
 N_Noise = len(Noise_I)
-I_recorded = TimedArray(Noise_I.T, dt)
+I_recorded = TimedArray(Noise_I.T, t_Neuron)
 eqs_noise = '''
 I = I_recorded(t,i)*amp : amp
 '''

@@ -1,16 +1,29 @@
 from A_Functions import *
+nameopen = globname+'SimParam.pickle'
+with open(nameopen, 'rb') as sims:
+    Sims = pickle.load(sims)
+#SimParams_mat = loadmat(simpar)['SimParams']
+print('loading went fine')
 
-SimParams_mat = loadmat(simpar)['SimParams']
-SimParams = SimParams_mat[0][0]
-saving = SimParams[0][0]
-plotting = SimParams[1][0]
-dt = SimParams[2][0][0]*second
-exp_runtime = SimParams[3][0][0]*second
-IO_response = SimParams[4][0]
+saving =  Sims['saving']
+plotting = Sims['plotting']
+dt = Sims['dt']*second
+exp_runtime = Sims['exp_runtime']*second
+IO_response = Sims['IO_response']
 
-N_Cells_PC = SimParams[5][0][0]
-N_Cells_DCN = SimParams[6][0][0]
-N_Cells_IO = SimParams[7][0][0]
+N_Cells_PC = Sims['N_Cells_PC']
+N_Cells_DCN = Sims['N_Cells_DCN']
+N_Cells_IO = Sims['N_Cells_IO']
+#SimParams = SimParams_mat[0][0]
+#saving = SimParams[0][0]
+#plotting = SimParams[1][0]
+#dt = SimParams[2][0][0]*second
+#exp_runtime = SimParams[3][0][0]*second
+#IO_response = SimParams[4][0]
+
+#N_Cells_PC = SimParams[5][0][0]
+#N_Cells_DCN = SimParams[6][0][0]
+#N_Cells_IO = SimParams[7][0][0]
 #####################################################################
 ########################### PURKINJE CELLS ##########################
 #####################################################################
