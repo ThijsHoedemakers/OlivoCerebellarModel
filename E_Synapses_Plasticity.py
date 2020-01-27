@@ -101,6 +101,8 @@ conn_N_PC_Coupled.weight=reshaped_weight
 #all_weights.reshape(n_PC,n_Noise)
 #print(all_weights)
 # "Synapses" to copy over the noise current
+
+##### CHANGE NOISE_EXTENDED TO SIMPLY NOISE
 copy_noise_Coupled = Synapses(Noise_extended, conn_N_PC_Coupled, 'I_post = I_pre : amp (summed)')
 # "connect if noise source label matches source index":
 copy_noise_Coupled.connect(i=i_ind, j=j_ind)
@@ -219,6 +221,9 @@ reshaped_weightun = reshaped_weightun.reshape(n_Noise*n_PC)
 
 conn_N_PC_Uncoupled.weight=reshaped_weightun
 # "Synapses" to copy over the noise current
+
+#### Here as well!!!!!
+
 copy_noise_Uncoupled = Synapses(Noise_extended, conn_N_PC_Uncoupled, 'I_post = I_pre : amp (summed)')
 # "connect if noise source label matches source index":
 copy_noise_Uncoupled.connect(i=i_ind, j=j_ind)

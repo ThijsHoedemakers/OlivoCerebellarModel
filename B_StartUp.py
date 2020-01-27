@@ -7,7 +7,7 @@ print('loading went fine')
 
 saving =  Sims['saving']
 plotting = Sims['plotting']
-dt = Sims['dt']
+dt = Sims['dt']*second
 exp_runtime = Sims['exp_runtime']*second
 IO_response = Sims['IO_response']
 

@@ -30,7 +30,7 @@ with open(nois, 'wb') as inp2:
 
 ### Voltage of Cell
 VoltCell = {'IOsoma':IO_Statemon_Coupled_noSTDP.Vs, 'IOdend':IO_Statemon_Coupled_noSTDP.Vd, 
-            'PC':PC_Statemon_Coupled_noSTDP.v, 'DCN':DCN_Spikemon_Coupled_noSTDP.v}
+            'PC':PC_Statemon_Coupled_noSTDP.v, 'DCN':DCN_Statemon_Coupled_noSTDP.v}
 with open(volt, 'wb') as vc2:
     pickle.dump(VoltCell, vc2, pickle.HIGHEST_PROTOCOL)
     print('Voltage Cells are saved')

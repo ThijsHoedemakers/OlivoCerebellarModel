@@ -72,6 +72,20 @@ S_Coupled_noSTDP.connect()
 S_Coupled_noSTDP.noise_weight = 'abs(1-abs(i-j)/N_Cells_PC)'
 S_statemon = StateMonitor(S_Coupled_noSTDP, variables=['noise_weight','I_Noise'], record=True,dt=t_Monitor)
 
+# normalised weights
+norm_coupled=S_Coupled_noSTDP.noise_weight[:].reshape(n_Noise,n_PC)
+print('reshaped weigth',norm_coupled)
+# calculate the sum of the column
+column_sum= norm_coupled.sum(axis=0)
+print('column sum =', column_sum)
+# normalize by the weight of the columns
+reshaped_weight = norm_coupled/ column_sum[np.newaxis,:]
+# reshape it to the form of 'conn_N_PC_Coupled.weight'
+reshaped_weight = reshaped_weight.reshape(n_Noise*n_PC)
+
+S_Coupled_noSTDP.noise_weight=reshaped_weight
+print('new weights', S_Coupled_noSTDP.noise_weight)
+
 Synapse_IO_PC_Coupled_noSTDP = Synapses(IO_Coupled_noSTDP, PC_Coupled_noSTDP, on_pre ='w +=(0.005*nA)', delay=2*ms, name = 'IO_PC_Synapse_Coupled_noSTDP',method = 'euler',dt=t_Neuron)
 # Synapse_IO_PC_Coupled_noSTDP.connect('i==j')
 IO_index = random.sample(range(N_Cells_IO), 10)
@@ -145,6 +159,18 @@ S_Uncoupled_noSTDP.connect()
 S_Uncoupled_noSTDP.noise_weight = 'abs(1-abs(i-j)/N_Cells_PC)'
 S_statemon = StateMonitor(S_Uncoupled_noSTDP, variables=['noise_weight','I_Noise'], record=True,dt=t_Monitor)
 
+norm_coupled=S_Uncoupled_noSTDP.noise_weight[:].reshape(n_Noise,n_PC)
+print('reshaped weigth',norm_coupled)
+# calculate the sum of the column
+column_sum= norm_coupled.sum(axis=0)
+print('column sum =', column_sum)
+# normalize by the weight of the columns
+reshaped_weightUnC = norm_coupled/ column_sum[np.newaxis,:]
+# reshape it to the form of 'conn_N_PC_Coupled.weight'
+reshaped_weightUnC = reshaped_weight.reshape(n_Noise*n_PC)
+
+S_Uncoupled_noSTDP.noise_weight=reshaped_weightUnC
+
 Synapse_IO_PC_Uncoupled_noSTDP = Synapses(IO_Uncoupled_noSTDP, PC_Uncoupled_noSTDP, on_pre ='w +=(0.005*nA)', delay=2*ms, name = 'IO_PC_Synapse_Uncoupled_noSTDP',method = 'euler',dt=t_Neuron)
 # Synapse_IO_PC_Uncoupled_noSTDP.connect('i==j')
 #Synapse_IO_PC_Uncoupled_noSTDP.connect(i=IO_index, j=range(N_Cells_PC))
@@ -152,8 +178,8 @@ Synapse_IO_PC_Uncoupled_noSTDP.connect(i=i_IOPC, j=j_IOPC)
 
 DCN_PC_Synapse_Uncoupled_noSTDP = Synapses(PC_Uncoupled_noSTDP, DCN_Uncoupled_noSTDP, on_pre='I_PC_post = 1.5*nA', delay=2*ms, name = 'PC_DCN_Synapse_Uncoupled_noSTDP',dt=t_Neuron) 
 # DCN_PC_Synapse_Uncoupled_noSTDP.connect(j='k for k in range(i,i+N_Cells_PC+1)')
-DCN_PC_Synapse_Uncoupled_noSTDP.connect(i=DCN_PC_Synapse_Coupled_targ,j=DCN_PC_Synapse_Coupled_mm)
-
+#DCN_PC_Synapse_Uncoupled_noSTDP.connect(i=DCN_PC_Synapse_Coupled_targ,j=DCN_PC_Synapse_Coupled_mm)
+DCN_PC_Synapse_Uncoupled_noSTDP.connect(i=i_PCDCN,j=j_PCDCN)
 IO_DCN_Synapse_Uncoupled_noSTDP = Synapses(DCN_Uncoupled_noSTDP, IO_Uncoupled_noSTDP, on_pre = 'I_IO_DCN_post += -0.05*uA*cm**-2', delay=3*ms, name = 'IO_DCN_Synapse_Uncoupled_noSTDP', method = 'euler',dt=t_Neuron)
 # IO_DCN_Synapse_Uncoupled_noSTDP.connect(j='k for k in range(i,i+int(N_Cells_IO/2))', skip_if_invalid=True)
 # IO_DCN_Synapse_Uncoupled_noSTDP.connect(j='k for k in range(i-int(N_Cells_IO/2)) if i>int(N_Cells_IO/2)')

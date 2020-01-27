@@ -9,7 +9,7 @@ nois = list(globname)
 #add the new words
 nois.append('AfterSim_Plasticity.pickle')
 volt.append('_VoltageCell_Plasticity.pickle')
-param.append('_PlasticityVariables_Plasticity.pickle')
+param.append('_PlasticityVariables.pickle')
 spikes.append('_SpikeTimes_Plasticity.pickle')
 nois="".join(nois)
 volt="".join(volt)

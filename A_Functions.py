@@ -36,15 +36,14 @@ def rand_params(Parameter,Unit,N_Cells,Step):
     return Param_vector 
     
     
-def NoiseGenerator(number,noisetype,IC,duration,name,sima):
+def NoiseGenerator(number,noisetype,IC,duration,name):
     N_noise = number
     # create global variables, so they can be used in the other scripts as well
     global t_Neuron 
     t_Neuron=0.025*ms
     global t_Monitor 
     t_Monitor=1*ms
-    global simpar
-    simpar=sima
+
     global globname
     globname = name
     namesp=list(name)
