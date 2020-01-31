@@ -74,17 +74,17 @@ S_statemon = StateMonitor(S_Coupled_noSTDP, variables=['noise_weight','I_Noise']
 
 # normalised weights
 norm_coupled=S_Coupled_noSTDP.noise_weight[:].reshape(n_Noise,n_PC)
-print('reshaped weigth',norm_coupled)
+#print('reshaped weigth',norm_coupled)
 # calculate the sum of the column
 column_sum= norm_coupled.sum(axis=0)
-print('column sum =', column_sum)
+#print('column sum =', column_sum)
 # normalize by the weight of the columns
 reshaped_weight = norm_coupled/ column_sum[np.newaxis,:]
 # reshape it to the form of 'conn_N_PC_Coupled.weight'
 reshaped_weight = reshaped_weight.reshape(n_Noise*n_PC)
 
 S_Coupled_noSTDP.noise_weight=reshaped_weight
-print('new weights', S_Coupled_noSTDP.noise_weight)
+print('new weights no STDP coupled', S_Coupled_noSTDP.noise_weight)
 
 Synapse_IO_PC_Coupled_noSTDP = Synapses(IO_Coupled_noSTDP, PC_Coupled_noSTDP, on_pre ='w +=(0.005*nA)', delay=2*ms, name = 'IO_PC_Synapse_Coupled_noSTDP',method = 'euler',dt=t_Neuron)
 # Synapse_IO_PC_Coupled_noSTDP.connect('i==j')
@@ -157,19 +157,22 @@ IO_synapse_Coupled_noSTDP.connect()
 S_Uncoupled_noSTDP = Synapses(Noise, PC_Uncoupled_noSTDP, eqs_syn_Noise_PC_noSTDP,name = 'PC_Noise_Synapse_Uncoupled_noSTDP',dt=t_Neuron)
 S_Uncoupled_noSTDP.connect()
 S_Uncoupled_noSTDP.noise_weight = 'abs(1-abs(i-j)/N_Cells_PC)'
-S_statemon = StateMonitor(S_Uncoupled_noSTDP, variables=['noise_weight','I_Noise'], record=True,dt=t_Monitor)
-
 norm_coupled=S_Uncoupled_noSTDP.noise_weight[:].reshape(n_Noise,n_PC)
-print('reshaped weigth',norm_coupled)
+
+#print('reshaped weigth',norm_coupled)
 # calculate the sum of the column
 column_sum= norm_coupled.sum(axis=0)
-print('column sum =', column_sum)
+#print('column sum =', column_sum)
 # normalize by the weight of the columns
 reshaped_weightUnC = norm_coupled/ column_sum[np.newaxis,:]
 # reshape it to the form of 'conn_N_PC_Coupled.weight'
 reshaped_weightUnC = reshaped_weight.reshape(n_Noise*n_PC)
-
+print('new weights no STDP uncoupled', reshaped_weightUnC)
 S_Uncoupled_noSTDP.noise_weight=reshaped_weightUnC
+
+S_statemon = StateMonitor(S_Uncoupled_noSTDP, variables=['noise_weight','I_Noise'], record=True,dt=t_Monitor)
+
+
 
 Synapse_IO_PC_Uncoupled_noSTDP = Synapses(IO_Uncoupled_noSTDP, PC_Uncoupled_noSTDP, on_pre ='w +=(0.005*nA)', delay=2*ms, name = 'IO_PC_Synapse_Uncoupled_noSTDP',method = 'euler',dt=t_Neuron)
 # Synapse_IO_PC_Uncoupled_noSTDP.connect('i==j')

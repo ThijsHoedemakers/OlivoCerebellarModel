@@ -22,7 +22,7 @@ spikes="".join(spikes)
 #    pickle.dump(PV, par, pickle.HIGHEST_PROTOCOL)
 #    print('Plasticity variables are saved')
 
-Input={'I':S_statemon.I_Noise, 'nweight':S_statemon.noise_weight}
+Input={'I':Noise_statemon.I, 'nweight':S_statemon.noise_weight, 'I_InputPC':PC_Statemon_Coupled_noSTDP.I_Noise}
 
 with open(nois, 'wb') as inp2:
     pickle.dump(Input, inp2, pickle.HIGHEST_PROTOCOL)

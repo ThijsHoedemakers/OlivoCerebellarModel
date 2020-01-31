@@ -85,18 +85,19 @@ conn_N_PC_Coupled.indx = 'conn_target+(10*rand())'
 # Set the static weight in some way (can refer to noise_source and PC_target)
 #original
 conn_N_PC_Coupled.weight = '1-(abs(((conn_target-noise_source)/N_Cells_PC)))'
-print('weights before', conn_N_PC_Coupled.weight)
+#print('weights before', conn_N_PC_Coupled.weight)
 # reshape the values to a matrix of size [#input #PC]
 norm_coupled=conn_N_PC_Coupled.weight[:].reshape(n_Noise,n_PC)
-print('reshaped weigth',norm_coupled)
+#print('reshaped weigth',norm_coupled)
 # calculate the sum of the column
 column_sum= norm_coupled.sum(axis=0)
-print('column sum =', column_sum)
+#print('column sum =', column_sum)
 # normalize by the weight of the columns
 reshaped_weight = norm_coupled/ column_sum[np.newaxis,:]
 # reshape it to the form of 'conn_N_PC_Coupled.weight'
 reshaped_weight = reshaped_weight.reshape(n_Noise*n_PC)
 
+print('final static weights STDP',reshaped_weight)
 conn_N_PC_Coupled.weight=reshaped_weight
 #all_weights.reshape(n_PC,n_Noise)
 #print(all_weights)
@@ -220,9 +221,9 @@ reshaped_weightun = norm_uncoupled/ column_sumun[np.newaxis,:]
 reshaped_weightun = reshaped_weightun.reshape(n_Noise*n_PC)
 
 conn_N_PC_Uncoupled.weight=reshaped_weightun
-# "Synapses" to copy over the noise current
 
-#### Here as well!!!!!
+print('final static weights uncoupled STDP',reshaped_weightun)
+# "Synapses" to copy over the noise current
 
 copy_noise_Uncoupled = Synapses(Noise_extended, conn_N_PC_Uncoupled, 'I_post = I_pre : amp (summed)')
 # "connect if noise source label matches source index":
