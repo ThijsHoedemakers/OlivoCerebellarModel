@@ -197,13 +197,12 @@ eqs_IO += eqs_vector
 
 
 
-
+## Deleted (1.0/N_Noise) since it is already normalized in the weights
 
 eqs_syn_Noise_PC_noSTDP = '''
     noise_weight : 1
-    I_Noise_post = (noise_weight)*(I_pre)*(1.0/N_Noise) : amp (summed)
+    I_Noise_post = (noise_weight)*(I_pre) : amp (summed)
 '''
-
 eqs_syn_Noise_PC_STDP = '''
                         I : amp  # copy of the noise current
                         weight : 1  (constant)

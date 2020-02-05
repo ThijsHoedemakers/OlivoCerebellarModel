@@ -26,7 +26,7 @@ with open(param, 'wb') as par:
 
 ### Noise input
 
-Input={'I':Noise_extended_statemon.I, 'nweight':mon_N_PC_Coupled.new_weight}
+Input={'I':Noise_extended_statemon.I, 'nweight':mon_N_PC_Coupled.new_weight, 'I_InputPC':PC_Statemon_Coupled_STDP.I_Noise}
 with open(nois, 'wb') as inp:
     pickle.dump(Input, inp, pickle.HIGHEST_PROTOCOL)
     print('Inputs are saved')
