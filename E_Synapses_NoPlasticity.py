@@ -116,7 +116,7 @@ for kk in range(N_Cells_PC):
 DCN_PC_Synapse_Coupled_noSTDP.connect(i=i_PCDCN,j=j_PCDCN)
 
 
-IO_DCN_Synapse_Coupled_noSTDP = Synapses(DCN_Coupled_noSTDP, IO_Coupled_noSTDP, on_pre = 'I_IO_DCN_post += -0.05*uA*cm**-2', delay=3*ms, name = 'IO_DCN_Synapse_Coupled_noSTDP', method = 'euler',dt=t_Neuron)
+IO_DCN_Synapse_Coupled_noSTDP = Synapses(DCN_Coupled_noSTDP, IO_Coupled_noSTDP, on_pre = 'I_IO_DCN_post += -0.2*uA*cm**-2', delay=3*ms, name = 'IO_DCN_Synapse_Coupled_noSTDP', method = 'euler',dt=t_Neuron)
 # orgininal effect : (1/(N_Cells_IO*(N_Cells_DCN/2)))
 
 # IO_DCN_Synapse_Coupled_noSTDP.connect(j='k for k in range(i,i+int(N_Cells_IO/2))', skip_if_invalid=True)
@@ -183,7 +183,7 @@ DCN_PC_Synapse_Uncoupled_noSTDP = Synapses(PC_Uncoupled_noSTDP, DCN_Uncoupled_no
 # DCN_PC_Synapse_Uncoupled_noSTDP.connect(j='k for k in range(i,i+N_Cells_PC+1)')
 #DCN_PC_Synapse_Uncoupled_noSTDP.connect(i=DCN_PC_Synapse_Coupled_targ,j=DCN_PC_Synapse_Coupled_mm)
 DCN_PC_Synapse_Uncoupled_noSTDP.connect(i=i_PCDCN,j=j_PCDCN)
-IO_DCN_Synapse_Uncoupled_noSTDP = Synapses(DCN_Uncoupled_noSTDP, IO_Uncoupled_noSTDP, on_pre = 'I_IO_DCN_post += -0.05*uA*cm**-2', delay=3*ms, name = 'IO_DCN_Synapse_Uncoupled_noSTDP', method = 'euler',dt=t_Neuron)
+IO_DCN_Synapse_Uncoupled_noSTDP = Synapses(DCN_Uncoupled_noSTDP, IO_Uncoupled_noSTDP, on_pre = 'I_IO_DCN_post += -0.15*uA*cm**-2', delay=3*ms, name = 'IO_DCN_Synapse_Uncoupled_noSTDP', method = 'euler',dt=t_Neuron)
 # IO_DCN_Synapse_Uncoupled_noSTDP.connect(j='k for k in range(i,i+int(N_Cells_IO/2))', skip_if_invalid=True)
 # IO_DCN_Synapse_Uncoupled_noSTDP.connect(j='k for k in range(i-int(N_Cells_IO/2)) if i>int(N_Cells_IO/2)')
 

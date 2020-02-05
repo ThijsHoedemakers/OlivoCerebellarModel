@@ -1,8 +1,22 @@
 # Functions usefull for data analysis
+from __future__ import division
+
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+import elephant.conversion as conv
+import neo as n
+import quantities as pq
+import elephant.spike_train_correlation as stcorr
+import warnings
+
+import neo
+import quantities as pq
+import scipy.signal
+from scipy import integrate, sparse
+
+import elephant.conversion
 def Slicing(data, t_start=None, t_end=None):
     
     output={}
@@ -56,6 +70,59 @@ def FreqSpectrum(x):
     return spec
 
 
+def CorrelationPlot(ST,nr,bins,vis):
+    b = 25001 # amount of bins the spikes get divided into
+    sIO = ST
+    delays = np.zeros((nr,nr))
+    show = vis
+    
+    for ll in range(0,nr):
+        for m in range(0,nr):
+            t_end = int(max(sIO[0]))
+            t_s =int(min(sIO[0]))
+
+            ioN=sIO[m]*pq.s
+
+            ioM=sIO[ll]*pq.s
+
+
+            st = n.SpikeTrain(ioN, t_start=t_s*pq.s,t_stop=(t_end+1)*pq.s)
+            st2 = n.SpikeTrain(ioM,t_start=t_s*pq.s,t_stop=(t_end+1)*pq.s)
+
+            x =conv.BinnedSpikeTrain(st,num_bins=bins,t_start=t_s*pq.s)
+            x2 = conv.BinnedSpikeTrain(st2,num_bins=bins,t_start=t_s*pq.s)
+
+            cor12 = stcorr.cross_correlation_histogram(x,x2,window='full')
+
+            window=cor12[1]
+            edges = [min(window),max(window)]
+            st_obj = CrossCorrHist(x,x2, window=edges)
+
+            k=st_obj.correlate_memory()
+
+            # why does 'binnedspiketrain' does not have attribute 'get_num_spikes'
+            # the code suggests that it does.
+
+            delay=np.where(k==max(k))
+            if ll==m:
+                norm_val = max(k)
+            #print(delay[0][0])
+            #print()
+            delays[ll,m] = delay[0][0]-max(window)
+            #print(delay)
+            #print(len(k))
+            t=np.linspace(-(t_end-t_s),(t_end-t_s),num=bins*2-1)
+            if show == 'yes':
+                plt.figure()
+                plt.title('IO cell 0 correlated with IO cell'+str(m))
+                plt.plot(t,k/norm_val)
+                plt.ylabel('correlation value[-]')
+                plt.xlabel('bins centered around zero')
+                plt.show()
+        
+    return delays
+
+
 # -*- coding: utf-8 -*-
 """
 This modules provides functions to calculate correlations between spike trains.
@@ -63,17 +130,7 @@ This modules provides functions to calculate correlations between spike trains.
 :copyright: Copyright 2015-2016 by the Elephant team, see `doc/authors.rst`.
 :license: Modified BSD, see LICENSE.txt for details.
 """
-from __future__ import division
 
-import warnings
-
-import neo
-import numpy as np
-import quantities as pq
-import scipy.signal
-from scipy import integrate, sparse
-
-import elephant.conversion
 
 # The highest sparsity of the `BinnedSpikeTrain` matrix for which
 # memory-efficient (sparse) implementation of `covariance()` is faster than
@@ -81,7 +138,6 @@ import elephant.conversion
 _SPARSITY_MEMORY_EFFICIENT_THR = 0.1
 
 
-[docs]
 class CrossCorrHist(object):
     """
     Cross-correlation histogram for `BinnedSpikeTrain`s.
@@ -104,7 +160,6 @@ class CrossCorrHist(object):
         self.binned_st2 = binned_st2
         self.window = window
 
-[docs]
     def correlate_memory(self):
         """
         Slow, but memory safe mode.
@@ -145,7 +200,6 @@ class CrossCorrHist(object):
         return cross_corr
 
 
-[docs]
     def correlate_speed(self, cch_mode):
         """
         Fast, but might require a lot of memory.
@@ -177,7 +231,6 @@ class CrossCorrHist(object):
         return cross_corr
 
 
-[docs]
     def border_correction(self, cross_corr):
         """
         Parameters
@@ -197,6 +250,7 @@ class CrossCorrHist(object):
             np.arange(left_edge, right_edge + 1))
         correction = float(max_num_bins + 1) / n_values_fall_in_window
         return cross_corr * correction
+
 
     def cross_corr_coef(self, cross_corr):
         """
@@ -263,7 +317,7 @@ class CrossCorrHist(object):
 
 
 
-    def covariance(binned_sts, binary=False, fast=True):
+def covariance(binned_sts, binary=False, fast=True):
     r"""
     Calculate the NxN matrix of pairwise covariances between all combinations
     of N binned spike trains.
@@ -515,7 +569,6 @@ def _covariance_sparse(binned_sts, corrcoef_norm):
     return res
 
 
-[docs]
 def cross_correlation_histogram(
         binned_st1, binned_st2, window='full', border_correction=False,
         binary=False, kernel=None, method='speed', cross_corr_coef=False):
@@ -738,7 +791,6 @@ def cross_correlation_histogram(
 cch = cross_correlation_histogram
 
 
-[docs]
 def spike_time_tiling_coefficient(spiketrain_1, spiketrain_2, dt=0.005 * pq.s):
     """
     Calculates the Spike Time Tiling Coefficient (STTC) as described in
@@ -894,7 +946,6 @@ def spike_time_tiling_coefficient(spiketrain_1, spiketrain_2, dt=0.005 * pq.s):
 sttc = spike_time_tiling_coefficient
 
 
-[docs]
 def spike_train_timescale(binned_st, tau_max):
     r"""
     Calculates the auto-correlation time of a binned spike train.
@@ -958,4 +1009,7 @@ def spike_train_timescale(binned_st, tau_max):
     integr = np.abs((corrfct_pos / corrfct_pos[0]).magnitude)**2
     timescale = 2 * integrate.trapz(integr, dx=binsize)
     return timescale
+    
+    
+    
     
