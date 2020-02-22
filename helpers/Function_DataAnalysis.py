@@ -4,6 +4,7 @@ from __future__ import division
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
+import elephant.statistics as stat
 
 import elephant.conversion as conv
 import neo as n
@@ -121,6 +122,106 @@ def CorrelationPlot(ST,nr,bins,vis):
                 plt.show()
         
     return delays
+
+
+def RasterPlot(SpikeIO,SpikePC,SpikeDCN,f,steps,Input=None):
+
+    if f =='yes':
+        sizesub=5
+        simsize=1
+        t=np.linspace(int(min(SpikePC)),int(max(SpikePC)+1),steps)
+        fig, axs = plt.subplots(sizesub, 1,figsize=(10,5))
+        ax1 = plt.subplot(sizesub,1,1)
+        plt.title("PC spike times")
+        ax1.set_ylabel('PC Index [-]')
+        neu = SpikePC
+        lensim = len(neu)
+        yPC=np.ones((lensim,1))
+        axs=plt.scatter(x=neu,y=yPC,marker='|', color='black', label='PC 0')
+
+        
+        axx2 = plt.subplot(sizesub,1,4,sharex=ax1)
+
+        #axx.set_ylabel('firing frequency PC [Hz]')
+        freq=1/stat.isi(SpikePC)
+        #print(SpikeTimes_BA['PC'][0][1:])
+        plt.plot(SpikePC[1:],freq)
+        plt.ylabel('fir rate [hz]')
+
+        axx = plt.subplot(sizesub,1,5,sharex=ax1)
+        plt.plot(t,Input)
+        plt.ylabel('input')
+
+        for p in range(0,10):
+            axx=plt.subplot(sizesub,1,2, sharex=ax1)
+            plt.title('DCN spike times')
+            axx.set_ylabel('DCN Index [-]')
+            conDCN = [8,17,13,9,11,14,4,16,1,0]
+            dcn_neu = SpikeDCN[conDCN[p]]
+
+            dcn_lensim = len(dcn_neu)
+            dcn_y=np.ones((dcn_lensim,1))*p
+            plt.scatter(x=dcn_neu,y=dcn_y,marker='|', color='black',label='DCN'+str(p))
+
+        axx2=plt.subplot(sizesub,1,3, sharex=ax1)
+        plt.title('IO spike times')
+        axx2.set_ylabel('IO Index [-]')
+        io_neu = SpikeIO
+        io_lensim = len(io_neu)
+        io_y=np.ones((io_lensim,1))
+        plt.scatter(x=io_neu,y=io_y,marker='|', color='black',label='IO 9')
+
+    else:
+        sizesub=3
+        simsize=len(SpikeIO)
+        fig, axs = plt.subplots(sizesub, 1,figsize=(10,5))
+        t=np.linspace(int(min(SpikePC[0])),int(max(SpikePC[0])+1),steps)
+        for yy in range(0,simsize):
+        
+            if yy < len(SpikePC):
+                ax1 = plt.subplot(sizesub,1,1)
+                plt.title("PC spike times")
+                ax1.set_ylabel('PC Index [-]')
+                neu = SpikePC[yy]
+                lensim = len(neu)
+                yPC=np.ones((lensim,1))*yy
+                axs=plt.scatter(x=neu,y=yPC,marker='|', color='black', label='PC'+str(yy))
+
+
+
+            axx=plt.subplot(sizesub,1,2, sharex=ax1)
+            plt.title('DCN spike times')
+            axx.set_ylabel('DCN Index [-]')
+            dcn_neu = SpikeDCN[yy]
+            dcn_lensim = len(dcn_neu)
+            dcn_y=np.ones((dcn_lensim,1))*yy
+            plt.scatter(x=dcn_neu,y=dcn_y,marker='|', color='black',label='DCN'+str(yy))
+
+            axx2=plt.subplot(sizesub,1,3, sharex=ax1)
+            plt.title('IO spike times')
+            axx2.set_ylabel('IO Index [-]')
+            io_neu = SpikeIO[yy]
+            io_lensim = len(io_neu)
+            io_y=np.ones((io_lensim,1))*yy
+            plt.scatter(x=io_neu,y=io_y,marker='|', color='black',label='IO'+str(yy))
+
+
+        
+   
+        
+        
+        
+       
+       
+
+
+
+
+
+
+
+
+
 
 
 # -*- coding: utf-8 -*-
