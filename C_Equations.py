@@ -203,6 +203,7 @@ eqs_syn_Noise_PC_noSTDP = '''
     noise_weight : 1
     I_Noise_post = (noise_weight)*(I_pre) : amp (summed)
 '''
+
 eqs_syn_Noise_PC_STDP = '''
                         I : amp  # copy of the noise current
                         weight : 1  (constant)
@@ -210,6 +211,9 @@ eqs_syn_Noise_PC_STDP = '''
                         delta_weight = a_PC + a_IO : 1  # Change of delta due to LTD/LTP
                         da_PC/dt = -a_PC/tau_PC : 1  # PC influence on weight
                         da_IO/dt = -a_IO/tau_IO : 1  # IO influence on weight
+                        offset : 1 # offset of the input
+                        amplitude : 1 # amplitude of the input
+                        frequency : 1  # frequency of the input
                         noise_source : integer (constant)
                         PC_target : integer (constant)
                         conn_target : integer (constant)

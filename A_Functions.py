@@ -42,7 +42,10 @@ def NoiseGenerator(number,noisetype,IC,duration,name):
     t_Neuron=0.025*ms
     global t_Monitor 
     t_Monitor=1*ms
-
+    
+    global input_params
+    input_params=IC
+    
     global globname
     globname = name
     namesp=list(name)
@@ -73,7 +76,7 @@ def NoiseGenerator(number,noisetype,IC,duration,name):
         print('Noise input is of type double sine')
         # Noise double sine
         eqs = '''
-                dI/dt = (sine_amplitude)*sine_frequency*cos(sine_frequency*t): amp
+                I = sine_amplitude*sin(sine_frequency*t): amp
                 sine_amplitude : amp
                 sine_frequency: Hz
                 '''

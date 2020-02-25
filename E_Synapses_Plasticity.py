@@ -15,6 +15,9 @@ A_IO = -1/float(exp_runtime/msecond)#Apre*taupre/taupost*1.05
 print('A_PC=',A_PC)
 n_Noise = len(Noise)
 n_PC = len(PC_Coupled_STDP)
+
+timebeforespike = 0.01*second
+normfactor = 5e-9
 ### Fixed connectivity
 
 if n_Noise == 5:
@@ -79,6 +82,20 @@ else:
 conn_N_PC_Coupled = NeuronGroup(n_Noise*n_PC, eqs_syn_Noise_PC_STDP, method='euler',name = 'dummy_Coupled',dt=t_Neuron)
 mon_N_PC_Coupled = StateMonitor(conn_N_PC_Coupled , ['a_PC','a_IO','noise_source','PC_target','weight','I','delta_weight','new_weight'], record=True, dt=t_Monitor)
 # Set up the labels
+ofs_c = np.zeros(n_Noise*n_PC)
+ampl_c = np.zeros(n_Noise*n_PC)
+freq_c = np.zeros(n_Noise*n_PC)
+for kk in range(0,n_Noise):
+    #print(k*10, k*10+9)
+    ofs_c[kk*10:kk*10+10]=np.ones(n_PC)*input_params[kk]
+    ampl_c[kk*10:kk*10+10]=np.ones(n_PC)*input_params[n_Noise+kk]
+    freq_c[kk*10:kk*10+10]=np.ones(n_PC)*input_params[n_Noise*2+kk]
+print('offset',ofs_c, 'ampl',ampl_c,'freq',freq_c)
+conn_N_PC_Coupled.offset = ofs_c
+conn_N_PC_Coupled.amplitude = ampl_c
+#print(conn_N_PC_Uncoupled.amplitude)
+#np.array(input_params[n_Noise:(n_Noise+n_Noise)])*nA
+conn_N_PC_Coupled.frequency = freq_c
 conn_N_PC_Coupled.noise_source = 'i // n_PC'  # i.e., 0, 0, 1, 1, 2, 2, ...
 conn_N_PC_Coupled.PC_target = 'i % n_Noise' # i.e., 0, 1, 2, 3, 4, 0, 1, ...
 conn_N_PC_Coupled.conn_target = 'i % n_PC' # i.e., 0, 1, 0, 1, 0, 1, 0, 1, 0, 1
@@ -122,12 +139,12 @@ print('new weights', conn_N_PC_Coupled.weight)
 # removed (1.0/n_Noise) since it is already normalized in the previous step
 S_N_PC_Coupled = Synapses(conn_N_PC_Coupled, PC_Coupled_STDP,'''    
                                     I_Noise_post = (new_weight_pre)*I_pre : amp (summed)''',
-                            on_post='a_PC_pre += A_PC', method='euler',name = 'dummy_PC_Coupled',dt=t_Neuron)
+                            on_post='a_PC_pre += ((-(1e-9)*amplitude_pre/(2*pi*frequency_pre)*cos(2*pi*frequency_pre*t/second)+1e-9*amplitude_pre/(2*pi*frequency_pre)*cos(2*pi*frequency_pre*(t-timebeforespike)/second))+offset_pre*timebeforespike*1e-9/second)/normfactor', method='euler',name = 'dummy_PC_Coupled',dt=t_Neuron)
 # "connect if PC target label matches target index":
 S_N_PC_Coupled.connect(i=i_dPC,j =j_dPC)
 
 # LTD from IO cells:
-S_IO_N_Coupled = Synapses(IO_Coupled_STDP, conn_N_PC_Coupled, on_pre='a_IO_post += A_IO*abs((new_weight_post*(I_post-0.2*nA)))/nA', method='euler',name = 'dummy_IO_Coupled',dt=t_Neuron)  # where f is some function
+S_IO_N_Coupled = Synapses(IO_Coupled_STDP, conn_N_PC_Coupled, on_pre='a_IO_post += A_IO*abs((new_weight_post*(I_post)))/nA', method='euler',name = 'dummy_IO_Coupled',dt=t_Neuron)  # where f is some function
 # weight of all noise-Purkinje synapses:
 IO_index = random.sample(range(N_Cells_IO), 10)
 S_IO_N_Coupled.connect(i=i_IOd, j=j_IOd)
@@ -206,6 +223,22 @@ n_PC = len(PC_Uncoupled_STDP)
 conn_N_PC_Uncoupled = NeuronGroup(n_Noise*n_PC, eqs_syn_Noise_PC_STDP, method='euler',name = 'dummy_Uncoupled',dt=t_Neuron)
 mon_N_PC_Uncoupled = StateMonitor(conn_N_PC_Uncoupled , ['a_PC','a_IO','noise_source','PC_target','weight','I','delta_weight','new_weight'], record=True)
 # Set up the labels
+ofs = np.zeros(n_Noise*n_PC)
+ampl = np.zeros(n_Noise*n_PC)
+freq = np.zeros(n_Noise*n_PC)
+
+for kk in range(0,n_Noise):
+    #print(k*10, k*10+9)
+    ofs[kk*10:kk*10+10]=np.ones(n_PC)*input_params[kk]
+    ampl[kk*10:kk*10+10]=np.ones(n_PC)*input_params[n_Noise+kk]
+    freq[kk*10:kk*10+10]=np.ones(n_PC)*input_params[n_Noise*2+kk]
+print('offset',ofs, 'ampl',ampl,'freq',freq)
+
+conn_N_PC_Uncoupled.offset = ofs
+conn_N_PC_Uncoupled.amplitude = ampl
+#print(conn_N_PC_Uncoupled.amplitude)
+#np.array(input_params[n_Noise:(n_Noise+n_Noise)])*nA
+conn_N_PC_Uncoupled.frequency = freq
 conn_N_PC_Uncoupled.noise_source = 'i // n_PC'  # i.e., 0, 0, 1, 1, 2, 2, ...
 conn_N_PC_Uncoupled.PC_target = 'i % n_Noise' # i.e., 0, 1, 2, 3, 4, 0, 1, ...
 conn_N_PC_Uncoupled.conn_target = 'i % n_PC' # i.e., 0, 1, 0, 1, 0, 1, 0, 1, 0, 1
@@ -237,13 +270,17 @@ copy_noise_Uncoupled.connect(i=i_ind, j=j_ind)
 
 S_N_PC_Uncoupled = Synapses(conn_N_PC_Uncoupled, PC_Uncoupled_STDP,'''    
                                     I_Noise_post = (new_weight_pre)*I_pre : amp (summed)''',
-                            on_post='a_PC_pre += A_PC', method='euler',name = 'dummy_PC_Uncoupled',dt=t_Neuron)
+                            on_post='a_PC_pre += ((-amplitude_pre*(1e-9)/(2*pi*frequency_pre)*cos(2*pi*frequency_pre*t/second)+amplitude_pre*(1e-9)/(2*pi*frequency_pre)*cos(2*pi*frequency_pre*(t-timebeforespike)/second))+offset_pre*(timebeforespike/second)*1e-9)/normfactor', method='euler',name = 'dummy_PC_Uncoupled',dt=t_Neuron)
+# 0.001 is the amount of time before the spike the integration happens
+
+print(S_N_PC_Uncoupled)
+#print(S_N_PC_Uncoupled.on_post)
 # "connect if PC target label matches target index":
 S_N_PC_Uncoupled.connect(i=i_dPC,j =j_dPC)
 
 # LTD from IO cells:
 
-S_IO_N_Uncoupled = Synapses(IO_Uncoupled_STDP, conn_N_PC_Uncoupled, on_pre='a_IO_post += A_IO*abs((new_weight_post*(I_post-0.2*nA)))/nA', method='euler',name = 'dummy_IO_Uncoupled',dt=t_Neuron)  # where f is some function
+S_IO_N_Uncoupled = Synapses(IO_Uncoupled_STDP, conn_N_PC_Uncoupled, on_pre='a_IO_post += A_IO*abs((new_weight_post*(I_post)))/nA', method='euler',name = 'dummy_IO_Uncoupled',dt=t_Neuron)  # where f is some function
 # weight of all noise-Purkinje synapses:
 # IO_index = random.sample(range(20), 10)
 #S_IO_N_Uncoupled.connect(i=IO_index*n_Noise, j=range(len(conn_N_PC_Coupled)))
