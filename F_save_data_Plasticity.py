@@ -34,7 +34,7 @@ with open(nois, 'wb') as inp:
 ### Voltage of Cell
 
 VoltCell = {'IOsoma':IO_Statemon_Coupled_STDP.Vs, 'IOdend':IO_Statemon_Coupled_STDP.Vd, 
-            'PC':PC_Statemon_Coupled_STDP.v, 'DCN':DCN_Statemon_Coupled_STDP.v}
+            'PC':PC_Statemon_Coupled_STDP.v, 'DCN':DCN_Statemon_Coupled_STDP.v, 'IOsomaUncoupled':IO_Statemon_Uncoupled_STDP.Vs}
 with open(volt, 'wb') as vc:
     pickle.dump(VoltCell, vc, pickle.HIGHEST_PROTOCOL)
     print('Voltage Cells are saved')
@@ -43,7 +43,8 @@ with open(volt, 'wb') as vc:
 
 SpikeTimes = {'PC':list(PC_Spikemon_Coupled_STDP.spike_trains().values()),
               'DCN':list(DCN_Spikemon_Coupled_STDP.spike_trains().values()),
-              'IO':list(IO_Spikemon_Coupled_STDP.spike_trains().values())}
+              'IO_coupled':list(IO_Spikemon_Coupled_STDP.spike_trains().values()),
+             'IO_uncoupled':list(IO_Spikemon_Uncoupled_STDP.spike_trains().values())}
 with open(spikes, 'wb') as st:
     pickle.dump(SpikeTimes, st, pickle.HIGHEST_PROTOCOL)
     print('Spike Times are saved')

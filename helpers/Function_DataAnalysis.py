@@ -156,7 +156,7 @@ def RasterPlot(SpikeIO,SpikePC,SpikeDCN,f,steps,Input=None):
             axx=plt.subplot(sizesub,1,2, sharex=ax1)
             plt.title('DCN spike times')
             axx.set_ylabel('DCN Index [-]')
-            conDCN = [8,17,13,9,11,14,4,16,1,0]
+            conDCN = [19,17,16,14,12,8,7,6,2,1]
             dcn_neu = SpikeDCN[conDCN[p]]
 
             dcn_lensim = len(dcn_neu)
