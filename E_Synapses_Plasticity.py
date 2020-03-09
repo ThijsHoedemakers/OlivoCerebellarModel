@@ -243,7 +243,7 @@ IO_synapse_Coupled_STDP.connect()
 n_Noise = len(Noise)
 n_PC = len(PC_Uncoupled_STDP)
 conn_N_PC_Uncoupled = NeuronGroup(n_Noise*n_PC, eqs_syn_Noise_PC_STDP, method='euler',name = 'dummy_Uncoupled',dt=t_Neuron)
-mon_N_PC_Uncoupled = StateMonitor(conn_N_PC_Uncoupled , ['a_PC','a_IO','noise_source','PC_target','weight','I','new_weight','delta_weight', 'weight_PC','weight_IO'], record=True)
+mon_N_PC_Uncoupled = StateMonitor(conn_N_PC_Uncoupled , ['a_PC','a_IO','noise_source','PC_target','weight','I','new_weight','delta_weight', 'weight_PC','weight_IO'], record=True, dt=t_Monitor)
 # Set up the labels
 ofs = np.zeros(n_Noise*n_PC)
 ampl = np.zeros(n_Noise*n_PC)
