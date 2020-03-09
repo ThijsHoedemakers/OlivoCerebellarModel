@@ -2,8 +2,7 @@ from brian2 import *
 import datetime, pickle, numpy, random
 import scipy.io as sio
 from scipy.io import loadmat
-class Struct:
-    pass
+
 def visualise(S):
     Ns = len(S.source)
     Nt = len(S.target)
@@ -43,7 +42,10 @@ def NoiseGenerator(number,noisetype,IC,duration,name):
     t_Neuron=0.025*ms
     global t_Monitor 
     t_Monitor=1*ms
-
+    
+    global input_params
+    input_params=IC
+    
     global globname
     globname = name
     namesp=list(name)
@@ -74,7 +76,7 @@ def NoiseGenerator(number,noisetype,IC,duration,name):
         print('Noise input is of type double sine')
         # Noise double sine
         eqs = '''
-                dI/dt = (sine_amplitude)*sine_frequency*cos(sine_frequency*t): amp
+                I = sine_amplitude*sin(sine_frequency*t): amp
                 sine_amplitude : amp
                 sine_frequency: Hz
                 '''
@@ -82,6 +84,23 @@ def NoiseGenerator(number,noisetype,IC,duration,name):
         Input.sine_amplitude = np.array(IC[number:(number+number)])*nA
         #Input.sine_amplitude = np.array([IC[5], IC[6], IC[7], IC[8],IC[9]])*nA
         Input.sine_frequency = np.array(IC[number*2:])*2*pi*Hz
+        #eqs = '''
+                
+#                I = sine_amplitude*sin(sine_frequency*2*pi*t):amp
+#                sine_frequency = (exp(log(fmin)+(log(fmax)-log(fmin))*(0.5-#0.5*cos(2*pi*t/T))))*Hz : Hz
+#                sine_amplitude : amp
+#                T : second
+#                fmin: 1
+#                fmax: 1
+#                '''
+        #Input = NeuronGroup(N_noise, eqs, threshold='True', method='euler', name='Noise', dt=t_Neuron)
+        #Input.sine_amplitude = np.array(IC[number:(number+number)])*nA
+        #print(Input.sine_amplitude)
+        #Input.sine_amplitude = np.array([IC[5], IC[6], IC[7], IC[8],IC[9]])*nA
+        #Input.T = 1*second
+        #Input.fmin = np.array(IC[-2])#*2*pi*Hz
+        #Input.fmax = np.array(IC[-1])#*2*pi*Hz
+        #print(Input.fmin, Input.fmax)
         #Input.sine_frequency = np.array([IC[10], IC[11],IC[12],IC[13],IC[14]])*2*pi* Hz
 
         Input_statemon = StateMonitor(Input, variables=['I'], record=True, dt=t_Neuron)
@@ -116,6 +135,8 @@ def NoiseGenerator(number,noisetype,IC,duration,name):
     #print('input before offset',Input_created.I)
     #print(Input_created.I[0])
     Is = Input_statemon.I
+    #plt.figure()
+    #plt.plot(Input_statemon.t,Is[0])
     for ii in range(0,number):
         Is[ii] = Is[ii]+np.ones(len(Is[ii]))*IC[ii]*nA
     #Is[1] = Is[1]+np.ones(len(Is[1]))*IC[1]*nA
@@ -123,6 +144,9 @@ def NoiseGenerator(number,noisetype,IC,duration,name):
     #Input_statemon.I[3] = Input_created.I[3]+np.ones(len(Input_created.I[3]))*IC[3]*nA   
     #Input_statemon.I[4] = Input_created.I[4]+np.ones(len(Input_created.I[4]))*IC[4]*nA
     #print(Is)
+    #plt.figure()
+    #plt.plot(Input_statemon.t,Input_statemon.sine_frequency[0])
+    #plt.show()
     Input_created = {'I':asarray(Is),'time':asarray(Input_statemon.t)}
     #print(Input_created)
     #local = datetime.datetime.now()

@@ -71,6 +71,7 @@ IO_Coupled_STDP.g_int = IO_g_int
 IO_Coupled_STDP.p = IO_p
 IO_Coupled_STDP.p2 = IO_p2
 IO_Coupled_STDP.g_Ca_l =  IO_g_Ca_l
+IO_Coupled_STDP.a_value = 0*metre**-2*amp
 
 IO_Statemon_Coupled_STDP = StateMonitor(IO_Coupled_STDP, variables = ['Vs','Vd','I_IO_DCN', 'I_c'], record = True, dt=t_Monitor)
 IO_Spikemon_Coupled_STDP = SpikeMonitor(IO_Coupled_STDP)
@@ -149,6 +150,7 @@ for ii in range(0, N_Cells_IO, 1):
     IO_Uncoupled_STDP.p[ii] = IO_p[ii]
     IO_Uncoupled_STDP.p2[ii] = IO_p2[ii]
     IO_Uncoupled_STDP.g_Ca_l[ii] =  IO_g_Ca_l[ii]
+    IO_Uncoupled_STDP.a_value[ii] = 0*metre**-2*amp
 IO_Statemon_Uncoupled_STDP = StateMonitor(IO_Uncoupled_STDP, variables = ['Vs','Vd', 'I_IO_DCN','I_c'], record = True, dt=t_Monitor)
 IO_Spikemon_Uncoupled_STDP = SpikeMonitor(IO_Uncoupled_STDP)
 IO_rate_Uncoupled_STDP = PopulationRateMonitor(IO_Uncoupled_STDP)

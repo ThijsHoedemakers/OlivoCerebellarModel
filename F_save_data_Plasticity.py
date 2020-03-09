@@ -6,19 +6,22 @@ volt=list(globname)
 param = list(globname)
 spikes = list(globname)
 nois = list(globname)
+poprate = list(globname)
 #add the new words
 nois.append('AfterSim_Plasticity.pickle')
 volt.append('_VoltageCell_Plasticity.pickle')
 param.append('_PlasticityVariables.pickle')
 spikes.append('_SpikeTimes_Plasticity.pickle')
+poprate.append('_Population_rate.pickle')
 nois="".join(nois)
 volt="".join(volt)
 param="".join(param)
 spikes="".join(spikes)
+poprate="".join(poprate)
 
 ### Plasticity Variables
 
-PV={'a_PC':mon_N_PC_Coupled.a_PC, 'a_IO':mon_N_PC_Coupled.a_IO, 'delta':mon_N_PC_Coupled.delta_weight}
+PV={'a_PC_coupled':mon_N_PC_Coupled.a_PC, 'a_IO_coupled':mon_N_PC_Coupled.a_IO, 'weight_PC_coupled':mon_N_PC_Coupled.weight_PC, 'weight_IO_coupled':mon_N_PC_Coupled.weight_IO,'delta_weight_coupled':mon_N_PC_Coupled.delta_weight, 'new_weight_coupled':mon_N_PC_Coupled.new_weight,'a_PC_uncoupled':mon_N_PC_Uncoupled.a_PC, 'a_IO_uncoupled':mon_N_PC_Uncoupled.a_IO, 'weight_PC_uncoupled': mon_N_PC_Uncoupled.weight_PC, 'weight_IO_uncoupled':mon_N_PC_Uncoupled.weight_IO, 'delta_weight_uncoupled':mon_N_PC_Uncoupled.delta_weight, 'new_weight_uncoupled':mon_N_PC_Uncoupled.new_weight}
 
 with open(param, 'wb') as par:
     pickle.dump(PV, par, pickle.HIGHEST_PROTOCOL)
@@ -33,17 +36,25 @@ with open(nois, 'wb') as inp:
 
 ### Voltage of Cell
 
-VoltCell = {'IOsoma':IO_Statemon_Coupled_STDP.Vs, 'IOdend':IO_Statemon_Coupled_STDP.Vd, 
-            'PC':PC_Statemon_Coupled_STDP.v, 'DCN':DCN_Statemon_Coupled_STDP.v}
+VoltCell = {'IOsoma_coupled':IO_Statemon_Coupled_STDP.Vs, 'IOdend':IO_Statemon_Coupled_STDP.Vd, 
+            'IOsoma_uncoupled':IO_Statemon_Uncoupled_STDP.Vs,'PC_coupled':PC_Statemon_Coupled_STDP.v, 'DCN_coupled':DCN_Statemon_Coupled_STDP.v,'PC_uncoupled':PC_Statemon_Uncoupled_STDP.v, 'DCN_uncoupled':DCN_Statemon_Uncoupled_STDP.v}
 with open(volt, 'wb') as vc:
     pickle.dump(VoltCell, vc, pickle.HIGHEST_PROTOCOL)
     print('Voltage Cells are saved')
 
     ### Spike times
 
-SpikeTimes = {'PC':list(PC_Spikemon_Coupled_STDP.spike_trains().values()),
-              'DCN':list(DCN_Spikemon_Coupled_STDP.spike_trains().values()),
-              'IO':list(IO_Spikemon_Coupled_STDP.spike_trains().values())}
+SpikeTimes = {'PC_coupled':list(PC_Spikemon_Coupled_STDP.spike_trains().values()),
+              'DCN_coupled':list(DCN_Spikemon_Coupled_STDP.spike_trains().values()),
+              'PC_uncoupled':list(PC_Spikemon_Uncoupled_STDP.spike_trains().values()),
+              'DCN_uncoupled':list(DCN_Spikemon_Uncoupled_STDP.spike_trains().values()),
+              'IO_coupled':list(IO_Spikemon_Coupled_STDP.spike_trains().values()),
+             'IO_uncoupled':list(IO_Spikemon_Uncoupled_STDP.spike_trains().values())}
 with open(spikes, 'wb') as st:
     pickle.dump(SpikeTimes, st, pickle.HIGHEST_PROTOCOL)
     print('Spike Times are saved')
+Population = {'PC_uncoupled':PC_rate_Uncoupled_STDP.smooth_rate(window='gaussian', width=1*ms)/Hz, 'DCN_uncoupled':DCN_rate_Uncoupled_STDP.smooth_rate(window='gaussian',width=1*ms)/Hz, 'IO_uncoupled':IO_rate_Uncoupled_STDP.smooth_rate(window='gaussian',width=1*ms)/Hz,'PC_coupled':PC_rate_Coupled_STDP.smooth_rate(window='gaussian',width=1*ms)/Hz, 'DCN_coupled': DCN_rate_Coupled_STDP.smooth_rate(window='gaussian',width=1*ms)/Hz,'IO_coupled':IO_rate_Coupled_STDP.smooth_rate(window='gaussian',width=1*ms)/Hz,'t':PC_rate_Uncoupled_STDP.t/ms}
+
+with open(poprate, 'wb') as ka:
+    pickle.dump(Population, ka, pickle.HIGHEST_PROTOCOL)
+    print('population rates saved')

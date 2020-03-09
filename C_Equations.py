@@ -68,7 +68,7 @@ I_PC_max : amp
 #####################################################################
 eqs_IO_V = '''
 dVs/dt = (-(I_ds + I_ls + I_Na + I_Ca_l + I_K_dr + I_h + I_as) + Iapp_s + I_IO_DCN)/Cm : volt
-dVd/dt = (-(I_sd + I_ld + I_Ca_h + I_K_Ca + I_c) + Iapp_d)/Cm : volt
+dVd/dt = (-(I_sd + I_ld + I_Ca_h + I_K_Ca + I_c + I_extra) + Iapp_d)/Cm : volt
 dVa/dt = (-(I_K_a + I_sa + I_la + I_Na_a))/Cm : volt
 dI_IO_DCN/dt = (0*uA*cm**-2 - I_IO_DCN)/(30*ms) : amp*meter**-2
 I_c : metre**-2*amp
@@ -89,6 +89,7 @@ I_h     = g_h*q*(Vs-V_h)             : metre**-2*amp
 I_K_s   = g_K_s*(x_s**4)*(Vs-V_K)    : metre**-2*amp
 '''
 eqs_IO_Iden = '''
+I_extra = a_value                    : metre**-2*amp
 I_sd    = (g_int/(1-p))*(Vd-Vs)      : metre**-2*amp
 I_ld    = g_ld*(Vd-V_l)              : metre**-2*amp
 I_Ca_h  = g_Ca_h*r*r*(Vd-V_Ca)       : metre**-2*amp
@@ -181,6 +182,7 @@ g_la   : siemens/meter**2
 g_K_s   : siemens/meter**2
 p : 1
 p2 : 1
+a_value : metre**-2*amp
 '''
 
 eqs_IO = eqs_IO_beta
@@ -203,17 +205,27 @@ eqs_syn_Noise_PC_noSTDP = '''
     noise_weight : 1
     I_Noise_post = (noise_weight)*(I_pre) : amp (summed)
 '''
+
 eqs_syn_Noise_PC_STDP = '''
                         I : amp  # copy of the noise current
                         weight : 1  (constant)
-                        new_weight = weight + delta_weight : 1  
-                        delta_weight = a_PC + a_IO : 1  # Change of delta due to LTD/LTP
+                        new_weight = weight + delta_weight : 1 
+                        delta_weight = clip(weight_PC + weight_IO,-0.2*weight*((exp_runtime/60)/second),0.2*weight*((exp_runtime/60)/second)) : 1
+                        dweight_PC/dt = (a_PC/second) : 1
+                        dweight_IO/dt = (a_IO/second) : 1
                         da_PC/dt = -a_PC/tau_PC : 1  # PC influence on weight
                         da_IO/dt = -a_IO/tau_IO : 1  # IO influence on weight
+                        offset : 1 # offset of the input
+                        amplitude : 1 # amplitude of the input
+                        frequency : 1  # frequency of the input
                         noise_source : integer (constant)
                         PC_target : integer (constant)
                         conn_target : integer (constant)
                         indx : integer (constant)
 '''
-
+#delta_weight = a_PC + a_IO : 1  # Change of delta due to LTD/LTP
+#delta_weight = weight_PC + weight_IO : 1
+#max_change = 0.2*weight/(exp_runtime/60)
+#dweight_PC/dt = (a_PC/second) : 1
+#dweight_IO/dt = (a_IO/second) : 1
 eqs_IO_syn_Coupled = ''' I_c_pre = (0.00125*mS/cm**2)*(0.6*e**(-((Vd_pre/mvolt-Vd_post/mvolt)/50)**2) + 0.4)*(Vd_pre-Vd_post) : metre**-2*amp (summed)'''
