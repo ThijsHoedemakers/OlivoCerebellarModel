@@ -20,7 +20,8 @@ for jj in range(0,N_Cells_PC,1):
     PC_Coupled_STDP.b[jj] = PC_b[jj]
     PC_Coupled_STDP.Vr[jj] = PC_Vr[jj]
     PC_Coupled_STDP.v[jj] = PC_v[jj]
-    PC_Coupled_STDP.I_intrinsic[jj] = PC_I_intrinsic[jj]
+    PC_Coupled_STDP.I_intrinsic[jj] = 2*nA
+    #PC_I_intrinsic[jj]
 PC_Statemon_Coupled_STDP = StateMonitor(PC_Coupled_STDP, ['v', 'w', 'I_Noise','I_intrinsic','tauw'], record=True,dt=t_Monitor)
 PC_Spikemon_Coupled_STDP = SpikeMonitor(PC_Coupled_STDP)
 PC_rate_Coupled_STDP = PopulationRateMonitor(PC_Coupled_STDP)
@@ -120,7 +121,9 @@ for jj in range(0,N_Cells_PC,1):
     PC_Uncoupled_STDP.b[jj] = PC_b[jj]
     PC_Uncoupled_STDP.Vr[jj] = PC_Vr[jj]
     PC_Uncoupled_STDP.v[jj] = PC_v[jj]
-    PC_Uncoupled_STDP.I_intrinsic[jj] = PC_I_intrinsic[jj]
+    PC_Uncoupled_STDP.I_intrinsic[jj] = 2*nA
+    #PC_I_intrinsic[jj]
+print('intrinsic current =',PC_Uncoupled_STDP.I_intrinsic)
 PC_Statemon_Uncoupled_STDP = StateMonitor(PC_Uncoupled_STDP, ['v', 'w', 'I_Noise','I_intrinsic','tauw'], record=True,dt=t_Monitor)
 PC_Spikemon_Uncoupled_STDP = SpikeMonitor(PC_Uncoupled_STDP)
 PC_rate_Uncoupled_STDP = PopulationRateMonitor(PC_Uncoupled_STDP)

@@ -38,7 +38,7 @@ PC_b = rand_params(0.0805,nA,N_Cells_PC,(0.001/N_Cells_PC))  #0.0805*nA  #0*nA #
 PC_Vr = rand_params(-70.6,mV,N_Cells_PC,(0.5/N_Cells_PC))  #-70.6*mV
 PC_v = rand_params(-70.6,mV,N_Cells_PC,(0.5/N_Cells_PC))  #[-70.6*mV]*N_Cells_PC
 PC_I_intrinsic = rand_params(2,nA,N_Cells_PC,(0.2/N_Cells_PC))  #[2*nA]*N_Cells_PC
-print('intrinsic currents PC',PC_I_intrinsic)
+#print('intrinsic currents PC',PC_I_intrinsic)
 #####################################################################
 ################### DEEP CEREBELLAR NUCLEI CELLS ####################
 #####################################################################
