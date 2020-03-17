@@ -1,4 +1,4 @@
-from E_Synapses_Plasticity import *
+from E_New_Plasticity import *
 
 # rewrite name of voltage and plasticity variables to specificly save it with the right name
 #convert str to list 

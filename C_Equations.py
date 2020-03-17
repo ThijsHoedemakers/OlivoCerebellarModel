@@ -218,14 +218,16 @@ eqs_syn_Noise_PC_STDP = '''
                         offset : 1 # offset of the input
                         amplitude : 1 # amplitude of the input
                         frequency : 1  # frequency of the input
+                        
                         noise_source : integer (constant)
                         PC_target : integer (constant)
                         conn_target : integer (constant)
                         indx : integer (constant)
+                        
+                        f_st : 1 # frequency short term
+                        f_lt : 1 # frequency long term
 '''
-#delta_weight = a_PC + a_IO : 1  # Change of delta due to LTD/LTP
-#delta_weight = weight_PC + weight_IO : 1
-#max_change = 0.2*weight/(exp_runtime/60)
-#dweight_PC/dt = (a_PC/second) : 1
-#dweight_IO/dt = (a_IO/second) : 1
+
+
+
 eqs_IO_syn_Coupled = ''' I_c_pre = (0.00125*mS/cm**2)*(0.6*e**(-((Vd_pre/mvolt-Vd_post/mvolt)/50)**2) + 0.4)*(Vd_pre-Vd_post) : metre**-2*amp (summed)'''
