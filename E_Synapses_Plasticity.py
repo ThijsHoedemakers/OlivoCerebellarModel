@@ -21,7 +21,8 @@ wmax = 0.3
 
 n_Noise = len(Noise)
 n_PC = len(PC_Coupled_STDP)
-
+n_IO = len(IO_Coupled_STDP)
+print('number of IO',n_IO)
 # constants LTP
 timebeforespike = 0.000086*second
 max_LTP = 0.2
@@ -96,8 +97,9 @@ else:
     print('nr of noise it not 2-5')
 # This represents the noise-PC synapses:
 
+
 conn_N_PC_Coupled = NeuronGroup(n_Noise*n_PC, eqs_syn_Noise_PC_STDP, method='euler',name = 'dummy_Coupled',dt=t_Neuron)
-mon_N_PC_Coupled = StateMonitor(conn_N_PC_Coupled , ['a_PC','a_IO','noise_source','PC_target','weight','I','new_weight', 'delta_weight', 'weight_PC','weight_IO', 'f_st','f_lt'], record=True, dt=t_Monitor)
+mon_N_PC_Coupled = StateMonitor(conn_N_PC_Coupled , ['a_PC','a_IO','noise_source','PC_target','weight','I','new_weight', 'delta_weight', 'weight_PC','weight_IO', 'f_st_PC','f_lt_PC', 'f_st_IO','f_lt_IO'], record=True, dt=t_Monitor)
 # Set up the labels
 ofs_c = np.zeros(n_Noise*n_PC)
 ampl_c = np.zeros(n_Noise*n_PC)
@@ -158,8 +160,12 @@ print('new weights', conn_N_PC_Coupled.weight)
 # removed (1.0/n_Noise) since it is already normalized in the previous step
 S_N_PC_Coupled = Synapses(conn_N_PC_Coupled, PC_Coupled_STDP,'''    
                                     I_Noise_post = (new_weight_pre)*I_pre : amp (summed)''',
-                            on_post='a_PC_pre += ((-(1e-9)*amplitude_pre*cos(2*pi*frequency_pre*t/second)/(2*pi*frequency_pre)+ amplitude_pre*1e-9*cos(2*pi*frequency_pre*(t-timebeforespike)/second)/(2*pi*frequency_pre)+offset_pre*1e-9*(timebeforespike/second))*(max_LTP*weight_pre/u_var))/n_var',
+                            on_post='a_PC_pre += 0.001'
+                          ,
                           method='euler',name = 'dummy_PC_Coupled',dt=t_Neuron)
+
+#((-(1e-9)*amplitude_pre*cos(2*pi*frequency_pre*t/second)/(2*pi*frequency_pre)+ amplitude_pre*1e-9*cos(2*pi*frequency_pre*(t-timebeforespike)/second)/(2*pi*frequency_pre)+offset_pre*1e-9*(timebeforespike/second))*(max_LTP*weight_pre/u_var))/n_var'
+
 
  #((-(1e-9)*amplitude_pre/(2*pi*frequency_pre)*cos(2*pi*frequency_pre*t/second)+1e-#9*amplitude_pre/(2*pi*frequency_pre)*cos(2*pi*frequency_pre*(t-timebeforespike)/second))+offset_pre*timebeforespike*1e-#9/second)*new_weight_pre/normfactor', 
 # "connect if PC target label matches target index":

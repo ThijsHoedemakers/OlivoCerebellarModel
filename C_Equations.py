@@ -224,8 +224,11 @@ eqs_syn_Noise_PC_STDP = '''
                         conn_target : integer (constant)
                         indx : integer (constant)
                         
-                        f_st : 1 # frequency short term
-                        f_lt : 1 # frequency long term
+                        f_st_PC : 1 # frequency short term
+                        f_lt_PC : 1 # frequency long term
+                        
+                        f_st_IO : 1 # frequency short term
+                        f_lt_IO : 1 # frequency long term
 '''
 
 
