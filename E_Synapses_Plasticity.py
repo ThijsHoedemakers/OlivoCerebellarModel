@@ -160,8 +160,10 @@ print('new weights', conn_N_PC_Coupled.weight)
 # removed (1.0/n_Noise) since it is already normalized in the previous step
 S_N_PC_Coupled = Synapses(conn_N_PC_Coupled, PC_Coupled_STDP,'''    
                                     I_Noise_post = (new_weight_pre)*I_pre : amp (summed)''',
-                            on_post='a_PC_pre += (f_st_PC_pre*(f_st_PC_pre-f_lt_PC_pre)*(I_pre/amp)*weight_pre)/(f_lt_PC_pre+1)' ,
+                            on_post='a_PC_pre += clip(f_st_PC_pre-f_lt_PC_pre,0,20)*I_pre*weight_pre/amp' ,
                           method='euler',name = 'dummy_PC_Coupled',dt=t_Neuron)
+
+# clip((f_st_PC_pre*(f_st_PC_pre-f_lt_PC_pre)*(I_pre/amp)*weight_pre)/(f_lt_PC_pre+1),0,0.2)
 
 #((-(1e-9)*amplitude_pre*cos(2*pi*frequency_pre*t/second)/(2*pi*frequency_pre)+ amplitude_pre*1e-9*cos(2*pi*frequency_pre*(t-timebeforespike)/second)/(2*pi*frequency_pre)+offset_pre*1e-9*(timebeforespike/second))*(max_LTP*weight_pre/u_var))/n_var'
 
@@ -171,8 +173,10 @@ S_N_PC_Coupled = Synapses(conn_N_PC_Coupled, PC_Coupled_STDP,'''
 S_N_PC_Coupled.connect(i=i_dPC,j =j_dPC)
 
 # LTD from IO cells:
-S_IO_N_Coupled = Synapses(IO_Coupled_STDP, conn_N_PC_Coupled, on_pre='a_IO_post += (f_st_IO_post*(f_st_IO_post-f_lt_IO_post)*(I_post/amp)*weight_post)/(f_lt_IO_post+1)'
+S_IO_N_Coupled = Synapses(IO_Coupled_STDP, conn_N_PC_Coupled, on_pre='a_IO_post += -clip(f_st_IO_post-f_lt_IO_post,0,0.5)*I_post*weight_post/amp'
                           ,method='euler',name = 'dummy_IO_Coupled',dt=t_Neuron)  # where f is some function
+#-clip((f_st_IO_post*(f_st_IO_post-f_lt_IO_post)*(I_post/amp)*weight_post)/(f_lt_IO_post+1),0,0.2)
+
 # weight of all noise-Purkinje synapses:
 #-(1e-9*dtt*abs((I_post*weight_post)/nA)*(weight_post*max_LTD))/((offset_post+amplitude_post)*weight_post*1e-9)
 IO_index = random.sample(range(N_Cells_IO), 10)

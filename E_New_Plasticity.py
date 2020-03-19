@@ -6,12 +6,12 @@ from scipy.signal import find_peaks
 # The network operation is included to determine firing frequency dependent variables
 # Long term frequency
 # Short term frequency
-@network_operation
+@network_operation(dt=t_Monitor)
 def f(t):
     
     # The time parameters (moving average)
     PC_long_t = 0.3 # how much time the average of IO frequency is taken
-    PC_short_t = 90e-3
+    PC_short_t = 0.09
     
     IO_long_t =  5 # how much time the average of IO frequency is taken
     IO_short_t = 0.8
@@ -36,7 +36,7 @@ def f(t):
             #print('io spikes before 1 s',IO_spike_list_coupled)
                 
           
-        if t >= 0.5*second:
+        if t >= 1*second:
     # loop over the IO cell 
             #print('io spikes',IO_spike_list_coupled)
             #print('t before spike',t-800*ms)
@@ -64,7 +64,7 @@ def f(t):
     # loop over all dummy variables corresponding to the different weights
     for k in range(0,n_PC):
         #start_t = PC_spike_list_coupled[0][-1]/second    
-        if t >= 0.5*second :
+        if t >= 1*second :
             # Get the firing frequency for the short- and long term, 15ms and 1s accordingly
             short_term_variable_coupled = (PC_spike_list_coupled[k][PC_spike_list_coupled[k]>(t-PC_short_t*second)])/second
             #PC_spike_list_coupled[k][-15:]/second 
@@ -80,7 +80,7 @@ def f(t):
             
             # In the beginning of the simulation there is a transient. 
             # Therefore the plasticity mechanisms only start after a given time
-            
+           # if len(short_term_variable_coupled)>1:
                 # calculate the mean frequency short term
             conn_N_PC_Coupled.f_st_PC[k]=conn_N_PC_Coupled.f_st_PC[k+10] = np.mean(1/stat.isi(short_term_variable_coupled)) 
                 # calculate the mean frequency long term
