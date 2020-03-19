@@ -210,27 +210,31 @@ eqs_syn_Noise_PC_STDP = '''
                         I : amp  # copy of the noise current
                         weight : 1  (constant)
                         new_weight = weight + delta_weight : 1 
-                        delta_weight = clip(weight_PC + weight_IO,-0.2*weight*((exp_runtime/60)/second),0.2*weight*((exp_runtime/60)/second)) : 1
+                        delta_weight = weight_PC + weight_IO : 1
+
                         dweight_PC/dt = (a_PC/second) : 1
                         dweight_IO/dt = (a_IO/second) : 1
+                        
+
+                        f_st_PC : 1 # frequency short term
+                        f_lt_PC : 1 # frequency long term
+
+                        f_st_IO : 1 # frequency short term
+                        f_lt_IO : 1 # frequency long term
+                        
                         da_PC/dt = -a_PC/tau_PC : 1  # PC influence on weight
                         da_IO/dt = -a_IO/tau_IO : 1  # IO influence on weight
                         offset : 1 # offset of the input
                         amplitude : 1 # amplitude of the input
                         frequency : 1  # frequency of the input
-                        
+
                         noise_source : integer (constant)
                         PC_target : integer (constant)
                         conn_target : integer (constant)
                         indx : integer (constant)
-                        
-                        f_st_PC : 1 # frequency short term
-                        f_lt_PC : 1 # frequency long term
-                        
-                        f_st_IO : 1 # frequency short term
-                        f_lt_IO : 1 # frequency long term
+
 '''
-
-
+#dweight_PC/dt = ((f_st_PC*(f_st_PC-f_lt_PC)*I*weight)/(f_lt_PC+1))/(amp*second) : 1
+#dweight_IO/dt = ((f_st_IO*(f_st_IO-f_lt_IO)*I*weight)/(f_lt_IO+1))/(amp*second) : 1
 
 eqs_IO_syn_Coupled = ''' I_c_pre = (0.00125*mS/cm**2)*(0.6*e**(-((Vd_pre/mvolt-Vd_post/mvolt)/50)**2) + 0.4)*(Vd_pre-Vd_post) : metre**-2*amp (summed)'''
