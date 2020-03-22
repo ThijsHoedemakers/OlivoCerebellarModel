@@ -215,12 +215,17 @@ eqs_syn_Noise_PC_STDP = '''
                         dweight_PC/dt = (a_PC/second) : 1
                         dweight_IO/dt = (a_IO/second) : 1
                         
+                        y = clip(int(t/second),0,1) : 1
+
 
                         f_st_PC : 1 # frequency short term
                         f_lt_PC : 1 # frequency long term
+                        
+                        freq_st_IO_coupled : 1
 
-                        f_st_IO : 1 # frequency short term
-                        f_lt_IO : 1 # frequency long term
+                        std_f_IO_coupled : 1 # frequency short term
+                        mean_freq_IO_coupled : 1 # frequency long term
+                        max_LTD_IO_coupled : 1
                         
                         da_PC/dt = -a_PC/tau_PC : 1  # PC influence on weight
                         da_IO/dt = -a_IO/tau_IO : 1  # IO influence on weight
