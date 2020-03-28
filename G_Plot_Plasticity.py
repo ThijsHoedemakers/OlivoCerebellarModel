@@ -228,9 +228,9 @@ if plotting == 'yes':
     
     figure(figsize=(15, 4), dpi= 80, facecolor='w', edgecolor='k')
     title('weight PC', fontsize=16)
-    for pp in range(0,n_Noise*n_PC,1):
+    for pp in range(0,n_PC,1):
         plot(mon_N_PC_Uncoupled.t/msecond, mon_N_PC_Uncoupled.weight_PC[pp], ('C'+str(pp)), lw='2',color='black')
-        plot(mon_N_PC_Uncoupled.t/msecond, mon_N_PC_Uncoupled.weight_PC[pp], ('C'+str(pp)), lw='2',color='red')
+        plot(mon_N_PC_Uncoupled.t/msecond, mon_N_PC_Uncoupled.weight_PC[pp+10], ('C'+str(pp)), lw='2',color='red')
     legend(freq)
     xlabel('Time (ms)')
     ylabel('V (mV)')
@@ -239,9 +239,9 @@ if plotting == 'yes':
     
     figure(figsize=(15, 4), dpi= 80, facecolor='w', edgecolor='k')
     title('weight IO', fontsize=16)
-    for pp in range(0,n_Noise*n_PC,1):
+    for pp in range(0,n_PC,1):
         plot(mon_N_PC_Uncoupled.t/msecond, mon_N_PC_Uncoupled.weight_IO[pp], ('C'+str(pp)), lw='2',color='red')
-        plot(mon_N_PC_Uncoupled.t/msecond, mon_N_PC_Uncoupled.weight_IO[pp+10], ('C'+str(pp)), lw='2',color='red')
+        plot(mon_N_PC_Uncoupled.t/msecond, mon_N_PC_Uncoupled.weight_IO[pp+10], ('C'+str(pp)), lw='2',color='black')
 
     xlabel('Time (ms)')
     ylabel('V (mV)')
