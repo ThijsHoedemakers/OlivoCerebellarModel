@@ -108,7 +108,7 @@ if plotting == 'yes':
     xlabel('Time (ms)')
     ylabel('V (mV)')
     show()
-
+ 
     
 
     figure(figsize=(15, 4), dpi= 80, facecolor='w', edgecolor='k')

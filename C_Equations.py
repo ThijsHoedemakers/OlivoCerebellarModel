@@ -210,8 +210,19 @@ eqs_syn_Noise_PC_STDP = '''
                         I : amp  # copy of the noise current
                         weight : 1  (constant)
                         new_weight = weight + delta_weight : 1 
-                        delta_weight = weight_PC + weight_IO : 1
+                       
+                        
+                        
+                        w_PC_coupled  : 1
 
+                        w_IO_coupled : 1
+                        
+                        w_PC_uncoupled  : 1
+
+                        w_IO_uncoupled : 1
+                        
+                        delta_weight = weight_PC + weight_IO : 1
+                        
                         weight_PC : 1
                         weight_IO : 1
                        
@@ -235,8 +246,9 @@ eqs_syn_Noise_PC_STDP = '''
                         mean_freq_IO_uncoupled : 1 # frequency long term
                         max_LTD_IO_uncoupled : 1
                         
-                        da_PC/dt = -a_PC/tau_PC : 1  # PC influence on weight
-                        da_IO/dt = -a_IO/tau_IO : 1  # IO influence on weight
+                        
+                        input_dep : 1
+                        freq_dep : 1
                         offset : 1 # offset of the input
                         amplitude : 1 # amplitude of the input
                         frequency : 1  # frequency of the input
@@ -247,6 +259,12 @@ eqs_syn_Noise_PC_STDP = '''
                         indx : integer (constant)
 
 '''
+# w_PC = (1-1/(1+exp(-200*(delta_weight-max_LTD_IO_uncoupled*weight/1.2)))) : 1
+
+                        #w_IO = (1/(1+exp(-200*(delta_weight+max_LTD_IO_uncoupled*weight/1.2)))) :1
+                        
+#max_LTD_IO_uncoupled*weight*(ceil(delta_weight)*(1-1/(1+exp(-100*(delta_weight-max_LTD_IO_uncoupled*weight/2))))+floor(delta_weight)*(-1)*(1/(1+exp(-100*(delta_weight+max_LTD_IO_uncoupled*weight/2))))) : 1
+
 # dweight_IO/dt = (a_IO/second) : 1
                         
 #dweight_PC/dt = ((f_st_PC*(f_st_PC-f_lt_PC)*I*weight)/(f_lt_PC+1))/(amp*second) : 1

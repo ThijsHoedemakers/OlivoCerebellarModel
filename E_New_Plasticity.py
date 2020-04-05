@@ -144,9 +144,13 @@ def f(t):
         #start_t = PC_spike_list_coupled[0][-1]/second    
         if t >= t_start :
             # Get the firing frequency for the short- and long term, 15ms and 1s accordingly
-            PC_short = (PC_spike_list_coupled[k][PC_spike_list_coupled[k]>(t-PC_short_t*second)])/second
             PC_long_term_variable_coupled = (PC_spike_list_coupled[k][PC_spike_list_coupled[k]>(0.5*second)])/second
 
+            PC_short = (PC_long_term_variable_coupled[PC_long_term_variable_coupled>(t/second-PC_short_t)])
+            
+            
+            #PC_short = (PC_spike_list_coupled[k][PC_spike_list_coupled[k]>(t-PC_short_t*second)])/second
+            #PC_long_term_variable_coupled = (PC_spike_list_coupled[k][PC_spike_list_coupled[k]>(0.5*second)])/second
             #PC_spike_list_coupled[k][-15:]/second 
             nrPCspikes_coupled = (len(PC_long_term_variable_coupled)/(t/second-0.5))
             
@@ -187,8 +191,10 @@ def f(t):
         #start_t = PC_spike_list_coupled[0][-1]/second    
         if t >= t_start :
             # Get the firing frequency for the short- and long term, 15ms and 1s accordingly
-            PC = (PC_spike_list_uncoupled[k][PC_spike_list_uncoupled[k]>(t-PC_short_t*second)])/second
             PC_long_term_variable_uncoupled = (PC_spike_list_uncoupled[k][PC_spike_list_uncoupled[k]>(0.5*second)])/second
+            
+            PC = (PC_long_term_variable_uncoupled[PC_long_term_variable_uncoupled>(t/second-PC_short_t)])
+            #PC_long_term_variable_uncoupled = (PC_spike_list_uncoupled[k][PC_spike_list_uncoupled[k]>(0.5*second)])/second
             #PC_spike_list_coupled[k][-15:]/second 
             
             PC_short_term_variable_uncoupled = len(PC)/(PC_short_t)
