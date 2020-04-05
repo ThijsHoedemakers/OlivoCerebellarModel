@@ -205,27 +205,69 @@ eqs_syn_Noise_PC_noSTDP = '''
     noise_weight : 1
     I_Noise_post = (noise_weight)*(I_pre) : amp (summed)
 '''
-
+# ADD new_weight = weight+delta_weight
 eqs_syn_Noise_PC_STDP = '''
                         I : amp  # copy of the noise current
                         weight : 1  (constant)
                         new_weight = weight + delta_weight : 1 
-                        delta_weight = clip(weight_PC + weight_IO,-0.2*weight*((exp_runtime/60)/second),0.2*weight*((exp_runtime/60)/second)) : 1
-                        dweight_PC/dt = (a_PC/second) : 1
-                        dweight_IO/dt = (a_IO/second) : 1
-                        da_PC/dt = -a_PC/tau_PC : 1  # PC influence on weight
-                        da_IO/dt = -a_IO/tau_IO : 1  # IO influence on weight
+                       
+                        
+                        
+                        w_PC_coupled  : 1
+
+                        w_IO_coupled : 1
+                        
+                        w_PC_uncoupled  : 1
+
+                        w_IO_uncoupled : 1
+                        
+                        delta_weight = weight_PC + weight_IO : 1
+                        
+                        weight_PC : 1
+                        weight_IO : 1
+                       
+                        y = clip(int(t/second-0.9),0,1) : 1
+
+
+                        f_st_PC_coupled : 1 # frequency short term
+                        f_lt_PC_coupled : 1 # frequency long term
+                        
+                        f_lt_PC_uncoupled : 1
+                        f_st_PC_uncoupled : 1
+                        
+                        freq_st_IO_coupled : 1
+                        freq_st_IO_uncoupled : 1
+
+                        std_f_IO_coupled : 1 # frequency short term
+                        mean_freq_IO_coupled : 1 # frequency long term
+                        max_LTD_IO_coupled : 1
+                        
+                        std_f_IO_uncoupled : 1 # frequency short term
+                        mean_freq_IO_uncoupled : 1 # frequency long term
+                        max_LTD_IO_uncoupled : 1
+                        
+                        
+                        input_dep : 1
+                        freq_dep : 1
                         offset : 1 # offset of the input
                         amplitude : 1 # amplitude of the input
                         frequency : 1  # frequency of the input
+
                         noise_source : integer (constant)
                         PC_target : integer (constant)
                         conn_target : integer (constant)
                         indx : integer (constant)
+
 '''
-#delta_weight = a_PC + a_IO : 1  # Change of delta due to LTD/LTP
-#delta_weight = weight_PC + weight_IO : 1
-#max_change = 0.2*weight/(exp_runtime/60)
-#dweight_PC/dt = (a_PC/second) : 1
-#dweight_IO/dt = (a_IO/second) : 1
+# w_PC = (1-1/(1+exp(-200*(delta_weight-max_LTD_IO_uncoupled*weight/1.2)))) : 1
+
+                        #w_IO = (1/(1+exp(-200*(delta_weight+max_LTD_IO_uncoupled*weight/1.2)))) :1
+                        
+#max_LTD_IO_uncoupled*weight*(ceil(delta_weight)*(1-1/(1+exp(-100*(delta_weight-max_LTD_IO_uncoupled*weight/2))))+floor(delta_weight)*(-1)*(1/(1+exp(-100*(delta_weight+max_LTD_IO_uncoupled*weight/2))))) : 1
+
+# dweight_IO/dt = (a_IO/second) : 1
+                        
+#dweight_PC/dt = ((f_st_PC*(f_st_PC-f_lt_PC)*I*weight)/(f_lt_PC+1))/(amp*second) : 1
+#dweight_IO/dt = ((f_st_IO*(f_st_IO-f_lt_IO)*I*weight)/(f_lt_IO+1))/(amp*second) : 1
+
 eqs_IO_syn_Coupled = ''' I_c_pre = (0.00125*mS/cm**2)*(0.6*e**(-((Vd_pre/mvolt-Vd_post/mvolt)/50)**2) + 0.4)*(Vd_pre-Vd_post) : metre**-2*amp (summed)'''

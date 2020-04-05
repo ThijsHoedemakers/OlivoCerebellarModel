@@ -1,4 +1,4 @@
-from E_Synapses_Plasticity import *
+from E_New_Plasticity import *
 
 # rewrite name of voltage and plasticity variables to specificly save it with the right name
 #convert str to list 
@@ -21,7 +21,7 @@ poprate="".join(poprate)
 
 ### Plasticity Variables
 
-PV={'a_PC_coupled':mon_N_PC_Coupled.a_PC, 'a_IO_coupled':mon_N_PC_Coupled.a_IO, 'weight_PC_coupled':mon_N_PC_Coupled.weight_PC, 'weight_IO_coupled':mon_N_PC_Coupled.weight_IO,'delta_weight_coupled':mon_N_PC_Coupled.delta_weight, 'new_weight_coupled':mon_N_PC_Coupled.new_weight,'a_PC_uncoupled':mon_N_PC_Uncoupled.a_PC, 'a_IO_uncoupled':mon_N_PC_Uncoupled.a_IO, 'weight_PC_uncoupled': mon_N_PC_Uncoupled.weight_PC, 'weight_IO_uncoupled':mon_N_PC_Uncoupled.weight_IO, 'delta_weight_uncoupled':mon_N_PC_Uncoupled.delta_weight, 'new_weight_uncoupled':mon_N_PC_Uncoupled.new_weight}
+PV={'weight_PC_coupled':mon_N_PC_Coupled.weight_PC,'weight_IO_coupled':mon_N_PC_Coupled.weight_IO,'delta_weight_coupled':mon_N_PC_Coupled.delta_weight, 'new_weight_coupled':mon_N_PC_Coupled.new_weight,'weight_PC_uncoupled': mon_N_PC_Uncoupled.weight_PC, 'weight_IO_uncoupled':mon_N_PC_Uncoupled.weight_IO, 'delta_weight_uncoupled':mon_N_PC_Uncoupled.delta_weight, 'new_weight_uncoupled':mon_N_PC_Uncoupled.new_weight}
 
 with open(param, 'wb') as par:
     pickle.dump(PV, par, pickle.HIGHEST_PROTOCOL)
