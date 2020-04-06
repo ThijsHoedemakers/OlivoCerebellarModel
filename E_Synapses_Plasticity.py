@@ -195,8 +195,6 @@ S_IO_N_Coupled = Synapses(IO_Coupled_STDP, conn_N_PC_Coupled,
                         freq_dep_post = (1/(1+exp(-k_freq*(f_st_PC_coupled_post-per_above_lt*f_lt_PC_coupled_post))))
                         max_LTD = y_post*((max_LTD_IO_coupled_post*weight_post)/(t_learn*1e2*mean_freq_IO_coupled_post+(y_post-1)))
                         
-                       
-
                         w_IO_coupled_post = (1/(1+exp(-200*(delta_weight_post+max_LTD_IO_coupled_post*weight_post/1.2))))
                         
                         weight_IO_post += -max_LTD*w_IO_coupled_post*input_dep*freq_dep
