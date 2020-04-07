@@ -210,24 +210,18 @@ eqs_syn_Noise_PC_STDP = '''
                         I : amp  # copy of the noise current
                         weight : 1  (constant)
                         new_weight = weight + delta_weight : 1 
-                       
-                        
-                        
-                        w_PC_coupled  : 1
-
-                        w_IO_coupled : 1
-                        
-                        w_PC_uncoupled  : 1
-
-                        w_IO_uncoupled : 1
-                        
+                    
                         delta_weight = weight_PC + weight_IO : 1
+
+                        w_PC_coupled = (1-1/(1+exp(-200*(weight_PC-max_LTD_IO_coupled*weight/1.2)))) : 1                   
+                        w_IO_coupled = (1/(1+exp(-200*(weight_IO+max_LTD_IO_coupled*weight/1.2)))) : 1
+                        w_PC_uncoupled =(1-1/(1+exp(-200*(weight_PC-max_LTD_IO_uncoupled*weight/1.2)))) : 1                    
+                        w_IO_uncoupled =(1/(1+exp(-200*(weight_IO+max_LTD_IO_uncoupled*weight/1.2)))) : 1
                         
                         weight_PC : 1
                         weight_IO : 1
                        
                         y = clip(int(t/second-0.9),0,1) : 1
-
 
                         f_st_PC_coupled : 1 # frequency short term
                         f_lt_PC_coupled : 1 # frequency long term
