@@ -207,21 +207,37 @@ eqs_syn_Noise_PC_noSTDP = '''
 '''
 # ADD new_weight = weight+delta_weight
 eqs_syn_Noise_PC_STDP = '''
+                        y = clip(int(t/second-0.9),0,1) : 1
+                        y1 = clip(int(t/second-1.2),0,1) : 1
+
                         I : amp  # copy of the noise current
                         weight : 1  (constant)
                         new_weight = weight + delta_weight : 1 
                     
                         delta_weight = weight_PC + weight_IO : 1
+                        
 
                         w_PC_coupled = (1-1/(1+exp(-200*(weight_PC-max_LTD_IO_coupled*weight/1.2)))) : 1                   
                         w_IO_coupled = (1/(1+exp(-200*(weight_IO+max_LTD_IO_coupled*weight/1.2)))) : 1
                         w_PC_uncoupled =(1-1/(1+exp(-200*(weight_PC-max_LTD_IO_uncoupled*weight/1.2)))) : 1                    
                         w_IO_uncoupled =(1/(1+exp(-200*(weight_IO+max_LTD_IO_uncoupled*weight/1.2)))) : 1
                         
-                        weight_PC : 1
-                        weight_IO : 1
-                       
-                        y = clip(int(t/second-0.9),0,1) : 1
+                        dweight_PC/dt = -y1*weight_PC/(tau_PC+(y1-1)*second) : 1
+                        dweight_IO/dt = -y1*weight_IO/(tau_IO+(y1-1)*second): 1
+                        
+                        maxDelay = 800*second : second
+                        
+                        tau_PC = y1*maxDelay*evalCont*(1-1/(1+exp(-100*(weight_PC+abs(weight_IO)-max_LTD_IO_coupled*weight)))) : second
+                        tau_IO = y1*maxDelay*evalContt*(1-1/(1+exp(-100*(weight_PC+abs(weight_IO)-max_LTD_IO_coupled*weight)))) : second
+                        
+                        std = 0.015 : 1
+                        ContPC = y1*(weight_PC)/(weight_PC+abs(weight_IO)+y1-1) : 1
+                        ContIO = y1*abs(weight_IO)/(abs(weight_IO)+weight_PC+y1-1):1
+                        
+                        evalCont =-exp(-0.5*((ContPC-0.5)/std)**2)/(std*sqrt(2*pi))*(1/26.58875043902685)+1.01 : 1
+                        evalContt =-exp(-0.5*((ContIO-0.5)/std)**2)/(std*sqrt(2*pi))*(1/26.58875043902685)+1.01 : 1
+
+                        
 
                         f_st_PC_coupled : 1 # frequency short term
                         f_lt_PC_coupled : 1 # frequency long term
@@ -253,6 +269,7 @@ eqs_syn_Noise_PC_STDP = '''
                         indx : integer (constant)
 
 '''
+#std contr = .07758641225743652
 # w_PC = (1-1/(1+exp(-200*(delta_weight-max_LTD_IO_uncoupled*weight/1.2)))) : 1
 
                         #w_IO = (1/(1+exp(-200*(delta_weight+max_LTD_IO_uncoupled*weight/1.2)))) :1
