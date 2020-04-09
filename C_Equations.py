@@ -217,25 +217,25 @@ eqs_syn_Noise_PC_STDP = '''
                         delta_weight = weight_PC + weight_IO : 1
                         
 
-                        w_PC_coupled = (1-1/(1+exp(-200*(weight_PC-max_LTD_IO_coupled*weight/1.2)))) : 1                   
-                        w_IO_coupled = (1/(1+exp(-200*(weight_IO+max_LTD_IO_coupled*weight/1.2)))) : 1
-                        w_PC_uncoupled =(1-1/(1+exp(-200*(weight_PC-max_LTD_IO_uncoupled*weight/1.2)))) : 1                    
-                        w_IO_uncoupled =(1/(1+exp(-200*(weight_IO+max_LTD_IO_uncoupled*weight/1.2)))) : 1
+                        w_PC_coupled = (1-1/(1+exp(-200*(weight_PC-max_LTD_IO_coupled*new_weight/1.2)))) : 1                   
+                        w_IO_coupled = (1/(1+exp(-200*(weight_IO+max_LTD_IO_coupled*new_weight/1.2)))) : 1
+                        w_PC_uncoupled =(1-1/(1+exp(-200*(weight_PC-max_LTD_IO_uncoupled*new_weight/1.2)))) : 1                    
+                        w_IO_uncoupled =(1/(1+exp(-200*(weight_IO+max_LTD_IO_uncoupled*new_weight/1.2)))) : 1
                         
                         dweight_PC/dt = -y1*weight_PC/(tau_PC+(y1-1)*second) : 1
                         dweight_IO/dt = -y1*weight_IO/(tau_IO+(y1-1)*second): 1
                         
                         maxDelay = 800*second : second
                         
-                        tau_PC = y1*maxDelay*evalCont*(1-1/(1+exp(-100*(weight_PC+abs(weight_IO)-max_LTD_IO_coupled*weight)))) : second
-                        tau_IO = y1*maxDelay*evalContt*(1-1/(1+exp(-100*(weight_PC+abs(weight_IO)-max_LTD_IO_coupled*weight)))) : second
+                        tau_PC = y1*maxDelay*evalCont*(1-1/(1+exp(-100*(weight_PC+abs(weight_IO)-max_LTD_IO_coupled*new_weight)))) : second
+                        tau_IO = y1*maxDelay*evalContt*(1-1/(1+exp(-100*(weight_PC+abs(weight_IO)-max_LTD_IO_coupled*new_weight)))) : second
                         
                         std = 0.015 : 1
                         ContPC = y1*(weight_PC)/(weight_PC+abs(weight_IO)+y1-1) : 1
                         ContIO = y1*abs(weight_IO)/(abs(weight_IO)+weight_PC+y1-1):1
                         
                         evalCont =-exp(-0.5*((ContPC-0.5)/std)**2)/(std*sqrt(2*pi))*(1/26.58875043902685)+1.01 : 1
-                        evalContt =-exp(-0.5*((ContIO-0.5)/std)**2)/(std*sqrt(2*pi))*(1/26.58875043902685)+1.01 : 1
+                        evalContt =1-evalCont : 1
 
                         
 

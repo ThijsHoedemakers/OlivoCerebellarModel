@@ -343,7 +343,7 @@ S_N_PC_Uncoupled = Synapses(conn_N_PC_Uncoupled, PC_Uncoupled_STDP,'''
                             input_dep = ((I_pre/1e-9)/amp)/(clip((I_pre/1e-9)/amp,(amplitude_pre+offset_pre),10)) 
                             freq_dep_pre = (1/(1+exp(-k_freq*(f_st_PC_uncoupled_pre-per_above_lt*f_lt_PC_uncoupled_pre))))
 
-                            max_LTP = y_pre*((max_LTD_IO_uncoupled_pre*weight_pre)/(f_lt_PC_uncoupled_pre*t_learn+(y_pre-1)))
+                            max_LTP = y_pre*((max_LTD_IO_uncoupled_pre*new_weight_pre)/(f_lt_PC_uncoupled_pre*t_learn+(y_pre-1)))
 
                             weight_PC_pre += max_LTP*w_PC_uncoupled_pre*input_dep*freq_dep_pre
                             '''
@@ -364,7 +364,7 @@ S_IO_N_Uncoupled = Synapses(IO_Uncoupled_STDP, conn_N_PC_Uncoupled, on_pre='''
 
                         freq_dep = (1/(1+exp(-k_freq*(f_st_PC_uncoupled_post-per_above_lt*f_lt_PC_uncoupled_post))))
                                              
-                        max_LTD = y_post*((max_LTD_IO_uncoupled_post*weight_post)/(t_learn*1e2*mean_freq_IO_uncoupled_post+(y_post-1)))
+                        max_LTD = y_post*((max_LTD_IO_uncoupled_post*new_weight_post)/(t_learn*1e2*mean_freq_IO_uncoupled_post+(y_post-1)))
                         weight_IO_post += -max_LTD*w_IO_uncoupled_post*input_dep*freq_dep
                           ''', 
                             method='euler',name = 'dummy_IO_Uncoupled',dt=t_Neuron)  # where f is some function
