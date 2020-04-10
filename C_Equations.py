@@ -227,15 +227,12 @@ eqs_syn_Noise_PC_STDP = '''
                         
                         maxDelay = 800*second : second
                         
-                        tau_PC = y1*maxDelay*evalCont*(1-1/(1+exp(-100*(weight_PC+abs(weight_IO)-max_LTD_IO_coupled*new_weight)))) : second
-                        tau_IO = y1*maxDelay*evalContt*(1-1/(1+exp(-100*(weight_PC+abs(weight_IO)-max_LTD_IO_coupled*new_weight)))) : second
+                        tau = y1*maxDelay*evalCont*(1-1/(1+exp(-100*(weight_PC+abs(weight_IO)-max_LTD_IO_coupled*new_weight)))) : second
                         
                         std = 0.015 : 1
-                        ContPC = y1*(weight_PC)/(weight_PC+abs(weight_IO)+y1-1) : 1
-                        ContIO = y1*abs(weight_IO)/(abs(weight_IO)+weight_PC+y1-1):1
+                        CompeteLevel = y1*abs(weight_IO)/(abs(weight_IO)+weight_PC+y1-1):1
                         
-                        evalCont =-exp(-0.5*((ContPC-0.5)/std)**2)/(std*sqrt(2*pi))*(1/26.58875043902685)+1.01 : 1
-                        evalContt =1-evalCont : 1
+                        evalCont =-exp(-0.5*((CompeteLevel-0.5)/std)**2)/(std*sqrt(2*pi))*(1/26.58875043902685)+1.01 : 1
 
                         
 
@@ -252,6 +249,53 @@ eqs_syn_Noise_PC_STDP = '''
                         mean_freq_IO_coupled : 1 # frequency long term
                         max_LTD_IO_coupled : 1
                         
+                        std_f_IO_uncoupled : 1 # frequency short term
+                        mean_freq_IO_uncoupled : 1 # frequency long term
+                        max_LTD_IO_uncoupled : 1
+                        
+                        
+                        input_dep : 1
+                        freq_dep : 1
+                        offset : 1 # offset of the input
+                        amplitude : 1 # amplitude of the input
+                        frequency : 1  # frequency of the input
+
+                        noise_source : integer (constant)
+                        PC_target : integer (constant)
+                        conn_target : integer (constant)
+                        indx : integer (constant)
+
+'''
+eqs_syn_Noise_PC_STDP_uncoupled = '''
+                        y = clip(int(t/second-0.9),0,1) : 1
+                        y1 = clip(int(t/second-1.2),0,1) : 1
+
+                        I : amp  # copy of the noise current
+                        weight : 1  (constant)
+                        new_weight = weight + delta_weight : 1 
+                    
+                        delta_weight = weight_PC + weight_IO : 1
+                      
+                        w_PC_uncoupled =(1-1/(1+exp(-200*(weight_PC-max_LTD_IO_uncoupled*new_weight/1.2)))) : 1                    
+                        w_IO_uncoupled =(1/(1+exp(-200*(weight_IO+max_LTD_IO_uncoupled*new_weight/1.2)))) : 1
+                        
+                        dweight_PC/dt = -y1*weight_PC/(tau_PC+(y1-1)*second) : 1
+                        dweight_IO/dt = -y1*weight_IO/(tau_IO+(y1-1)*second): 1
+                        
+                        maxDelay = 800*second : second
+                        
+                        tau = y1*maxDelay*evalCont*(1-1/(1+exp(-100*(weight_PC+abs(weight_IO)-max_LTD_IO_uncoupled*new_weight)))) : second
+                        
+                        std = 0.015 : 1
+                        CompeteLevel = y1*abs(weight_IO)/(abs(weight_IO)+weight_PC+y1-1):1
+                        
+                        evalCont =-exp(-0.5*((CompeteLevel-0.5)/std)**2)/(std*sqrt(2*pi))*(1/26.58875043902685)+1.01 : 1
+                       
+                        f_lt_PC_uncoupled : 1
+                        f_st_PC_uncoupled : 1
+                        
+                        freq_st_IO_uncoupled : 1
+                       
                         std_f_IO_uncoupled : 1 # frequency short term
                         mean_freq_IO_uncoupled : 1 # frequency long term
                         max_LTD_IO_uncoupled : 1

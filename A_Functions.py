@@ -35,7 +35,7 @@ def rand_params(Parameter,Unit,N_Cells,Step):
     return Param_vector 
     
     
-def NoiseGenerator(number,noisetype,IC,duration,name):
+def NoiseGenerator(number,noisetype,IC,durationInput,durationTotal,name):
     N_noise = number
     # create global variables, so they can be used in the other scripts as well
     global t_Neuron 
@@ -125,7 +125,7 @@ def NoiseGenerator(number,noisetype,IC,duration,name):
     
     
 
-    run(duration*ms)
+    run(durationInput*ms)
 
 
     #Input_created = Struct()
@@ -134,11 +134,16 @@ def NoiseGenerator(number,noisetype,IC,duration,name):
     
     #print('input before offset',Input_created.I)
     #print(Input_created.I[0])
-    Is = Input_statemon.I
+    Is = np.zeros((number,int(durationTotal/(t_Neuron*1000))))
+    Inp = Input_statemon.I
     #plt.figure()
     #plt.plot(Input_statemon.t,Is[0])
     for ii in range(0,number):
-        Is[ii] = Is[ii]+np.ones(len(Is[ii]))*IC[ii]*nA
+        Inp[ii] = Inp[ii]+np.ones(len(Inp[ii]))*IC[ii]*nA
+        print(len(Inp[ii]))
+        Is[ii] =np.append(np.asarray(Inp[ii]),np.zeros(int((durationTotal-durationInput)/(t_Neuron*1000))))
+        print(Is[ii])
+        
     #Is[1] = Is[1]+np.ones(len(Is[1]))*IC[1]*nA
     #Is[2] = Input_created.I[2]+np.ones(len(Input_created.I[2]))*IC[2]*nA
     #Input_statemon.I[3] = Input_created.I[3]+np.ones(len(Input_created.I[3]))*IC[3]*nA   
@@ -147,7 +152,11 @@ def NoiseGenerator(number,noisetype,IC,duration,name):
     #plt.figure()
     #plt.plot(Input_statemon.t,Input_statemon.sine_frequency[0])
     #plt.show()
-    Input_created = {'I':asarray(Is),'time':asarray(Input_statemon.t)}
+    simT =int(durationTotal/1000)
+    step = int(simT/((t_Neuron/ms)/1000))
+    t = np.linspace(0,simT,step)
+    t = np.round(t,6)
+    Input_created = {'I':Is,'time':t}
     #print(Input_created)
     #local = datetime.datetime.now()
     #sio.savemat(namesp, mdict={'Input_created': Input_created})

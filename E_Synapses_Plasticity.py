@@ -286,7 +286,7 @@ IO_synapse_Coupled_STDP.connect()
 # This represents the noise-PC synapses:
 n_Noise = len(Noise)
 n_PC = len(PC_Uncoupled_STDP)
-conn_N_PC_Uncoupled = NeuronGroup(n_Noise*n_PC, eqs_syn_Noise_PC_STDP, method='euler',name = 'dummy_Uncoupled',dt=t_Neuron)
+conn_N_PC_Uncoupled = NeuronGroup(n_Noise*n_PC, eqs_syn_Noise_PC_STDP_uncoupled, method='euler',name = 'dummy_Uncoupled',dt=t_Neuron)
 mon_N_PC_Uncoupled = StateMonitor(conn_N_PC_Uncoupled , ['weight','I','new_weight','delta_weight','weight_PC','weight_IO','f_lt_PC_uncoupled','f_st_PC_uncoupled','max_LTD_IO_uncoupled','w_PC_uncoupled','w_IO_uncoupled','freq_dep','tau_IO','tau_PC','evalCont','evalContt','ContPC', 'ContIO'], record=True, dt=t_Monitor)
 #'max_LTD_IO_uncoupled','mean_freq_IO_uncoupled','distribution_mean','distribution_eval', 'freq_st_IO_uncoupled','std_f_IO_uncoupled','f_lt_PC_uncoupled','f_st_PC_uncoupled'
 # Set up the labels
