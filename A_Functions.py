@@ -140,9 +140,9 @@ def NoiseGenerator(number,noisetype,IC,durationInput,durationTotal,name):
     #plt.plot(Input_statemon.t,Is[0])
     for ii in range(0,number):
         Inp[ii] = Inp[ii]+np.ones(len(Inp[ii]))*IC[ii]*nA
-        print(len(Inp[ii]))
+        #print(len(Inp[ii]))
         Is[ii] =np.append(np.asarray(Inp[ii]),np.zeros(int((durationTotal-durationInput)/(t_Neuron*1000))))
-        print(Is[ii])
+        #print(Is[ii])
         
     #Is[1] = Is[1]+np.ones(len(Is[1]))*IC[1]*nA
     #Is[2] = Input_created.I[2]+np.ones(len(Input_created.I[2]))*IC[2]*nA
