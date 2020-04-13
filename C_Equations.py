@@ -217,15 +217,15 @@ eqs_syn_Noise_PC_STDP_coupled = '''
                         delta_weight = weight_PC + weight_IO : 1
                         
 
-                        w_PC_coupled = (1-1/(1+exp(-200*(weight_PC-max_LTD_IO_coupled*new_weight/1.2)))) : 1                   
-                        w_IO_coupled = (1/(1+exp(-200*(weight_IO+max_LTD_IO_coupled*new_weight/1.2)))) : 1
+                        w_PC_coupled = (1-1/(1+exp(-200*(weight_PC-max_LTD_IO_coupled*weight/1.2)))) : 1                   
+                        w_IO_coupled = (1/(1+exp(-200*(weight_IO+max_LTD_IO_coupled*weight/1.2)))) : 1
                        
                         dweight_PC/dt = -y1*weight_PC/(tau+(y1-1)*second) : 1
                         dweight_IO/dt = -y1*weight_IO/(tau+(y1-1)*second): 1
                         
                         maxDelay = 800*second : second
                         
-                        tau = y1*maxDelay*evalCont*(1-1/(1+exp(-100*(weight_PC+abs(weight_IO)-max_LTD_IO_coupled*new_weight)))) : second
+                        tau = ceil(I/amp)*(y1*maxDelay*evalCont*(1-1/(1+exp(-100*(weight_PC+abs(weight_IO)-max_LTD_IO_coupled*new_weight)))))+(1-ceil(I/amp))*maxDelay : second
                         
                         std = 0.015 : 1
                         CompeteLevel = y1*abs(weight_IO)/(abs(weight_IO)+weight_PC+y1-1):1
@@ -267,15 +267,15 @@ eqs_syn_Noise_PC_STDP_uncoupled = '''
                     
                         delta_weight = weight_PC + weight_IO : 1
                       
-                        w_PC_uncoupled =(1-1/(1+exp(-200*(weight_PC-max_LTD_IO_uncoupled*new_weight/1.2)))) : 1                    
-                        w_IO_uncoupled =(1/(1+exp(-200*(weight_IO+max_LTD_IO_uncoupled*new_weight/1.2)))) : 1
+                        w_PC_uncoupled =(1-1/(1+exp(-200*(weight_PC-max_LTD_IO_uncoupled*weight/1.2)))) : 1                    
+                        w_IO_uncoupled =(1/(1+exp(-200*(weight_IO+max_LTD_IO_uncoupled*weight/1.2)))) : 1
                         
                         dweight_PC/dt = -y1*weight_PC/(tau+(y1-1)*second) : 1
                         dweight_IO/dt = -y1*weight_IO/(tau+(y1-1)*second): 1
                         
                         maxDelay = 800*second : second
                         
-                        tau = y1*maxDelay*evalCont*(1-1/(1+exp(-100*(weight_PC+abs(weight_IO)-max_LTD_IO_uncoupled*new_weight)))) : second
+                        tau = ceil(I/amp)*(y1*maxDelay*evalCont*(1-1/(1+exp(-100*(weight_PC+abs(weight_IO)-max_LTD_IO_uncoupled*new_weight)))))+(1-ceil(I/amp))*maxDelay : second
                         
                         std = 0.015 : 1
                         CompeteLevel = y1*abs(weight_IO)/(abs(weight_IO)+weight_PC+y1-1):1
