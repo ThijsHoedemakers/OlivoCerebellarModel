@@ -242,7 +242,7 @@ if plotting == 'yes':
     for pp in range(0,n_PC,1):
         plot(mon_N_PC_Uncoupled.t/msecond, mon_N_PC_Uncoupled.weight_IO[pp], ('C'+str(pp)), lw='2',color='red')
         plot(mon_N_PC_Uncoupled.t/msecond, mon_N_PC_Uncoupled.weight_IO[pp+10], ('C'+str(pp)), lw='2',color='black')
-
+    legend(freq)
     xlabel('Time (ms)')
     ylabel('V (mV)')
     # legend();
