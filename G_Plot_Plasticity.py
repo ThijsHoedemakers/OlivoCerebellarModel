@@ -112,7 +112,7 @@ if plotting == 'yes':
     
 
     figure(figsize=(15, 4), dpi= 80, facecolor='w', edgecolor='k')
-    title('weight PC', fontsize=16)
+    title('weight LTP', fontsize=16)
     for pp in range(0,n_PC,1):
         plot(mon_N_PC_Coupled.t/msecond, mon_N_PC_Coupled.weight_PC[pp], ('C'+str(pp)), lw='2',color='black')
         plot(mon_N_PC_Coupled.t/msecond, mon_N_PC_Coupled.weight_PC[pp+10], ('C'+str(pp)), lw='2', color='red')
@@ -123,7 +123,7 @@ if plotting == 'yes':
     legend(freq);
     show() 
     figure(figsize=(15, 4), dpi= 80, facecolor='w', edgecolor='k')
-    title('weight IO', fontsize=16)
+    title('weight LTD', fontsize=16)
     for pp in range(0,n_PC,1):
         plot(mon_N_PC_Coupled.t/msecond, mon_N_PC_Coupled.weight_IO[pp], ('C'+str(pp)), lw='2',color='black')
         plot(mon_N_PC_Coupled.t/msecond, mon_N_PC_Coupled.weight_IO[pp+10], ('C'+str(pp)), lw='2', color='red')
@@ -227,7 +227,7 @@ if plotting == 'yes':
     figure(figsize=(15, 4), dpi= 80, facecolor='w', edgecolor='k')
     
     figure(figsize=(15, 4), dpi= 80, facecolor='w', edgecolor='k')
-    title('weight PC', fontsize=16)
+    title('weight LTP', fontsize=16)
     for pp in range(0,n_PC,1):
         plot(mon_N_PC_Uncoupled.t/msecond, mon_N_PC_Uncoupled.weight_PC[pp], ('C'+str(pp)), lw='2',color='black')
         plot(mon_N_PC_Uncoupled.t/msecond, mon_N_PC_Uncoupled.weight_PC[pp+10], ('C'+str(pp)), lw='2',color='red')
@@ -238,7 +238,7 @@ if plotting == 'yes':
     show()
     
     figure(figsize=(15, 4), dpi= 80, facecolor='w', edgecolor='k')
-    title('weight IO', fontsize=16)
+    title('weight LTD', fontsize=16)
     for pp in range(0,n_PC,1):
         plot(mon_N_PC_Uncoupled.t/msecond, mon_N_PC_Uncoupled.weight_IO[pp], ('C'+str(pp)), lw='2',color='red')
         plot(mon_N_PC_Uncoupled.t/msecond, mon_N_PC_Uncoupled.weight_IO[pp+10], ('C'+str(pp)), lw='2',color='black')

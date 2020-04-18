@@ -215,13 +215,13 @@ eqs_syn_Noise_PC_STDP_coupled = '''
                         new_weight = weight + delta_weight : 1 
                     
                         delta_weight = weight_PC + weight_IO : 1
+                        dweight_PC/dt = -y1*weight_PC/(tau+(y1-1)*second) : 1
+                        dweight_IO/dt = -y1*weight_IO/(tau+(y1-1)*second): 1
                         
 
                         w_PC_coupled = (1-1/(1+exp(-200*(weight_PC-max_LTD_IO_coupled*weight/1.2)))) : 1                   
                         w_IO_coupled = (1/(1+exp(-200*(weight_IO+max_LTD_IO_coupled*weight/1.2)))) : 1
-                       
-                        dweight_PC/dt = -y1*weight_PC/(tau+(y1-1)*second) : 1
-                        dweight_IO/dt = -y1*weight_IO/(tau+(y1-1)*second): 1
+                      
                         
                         maxDelay = 800*second : second
                         
@@ -239,7 +239,8 @@ eqs_syn_Noise_PC_STDP_coupled = '''
                         
                       
                         freq_st_IO_coupled : 1
-                     
+                        
+                        freq_dep : 1
 
                         std_f_IO_coupled : 1 # frequency short term
                         mean_freq_IO_coupled : 1 # frequency long term
@@ -266,12 +267,14 @@ eqs_syn_Noise_PC_STDP_uncoupled = '''
                         new_weight = weight + delta_weight : 1 
                     
                         delta_weight = weight_PC + weight_IO : 1
+                        
+                        dweight_PC/dt = -y1*weight_PC/(tau+(y1-1)*second) : 1
+                        dweight_IO/dt = -y1*weight_IO/(tau+(y1-1)*second): 1
                       
                         w_PC_uncoupled =(1-1/(1+exp(-200*(weight_PC-max_LTD_IO_uncoupled*weight/1.2)))) : 1                    
                         w_IO_uncoupled =(1/(1+exp(-200*(weight_IO+max_LTD_IO_uncoupled*weight/1.2)))) : 1
                         
-                        dweight_PC/dt = -y1*weight_PC/(tau+(y1-1)*second) : 1
-                        dweight_IO/dt = -y1*weight_IO/(tau+(y1-1)*second): 1
+                        freq_dep : 1
                         
                         maxDelay = 800*second : second
                         
@@ -304,6 +307,8 @@ eqs_syn_Noise_PC_STDP_uncoupled = '''
                         indx : integer (constant)
 
 '''
+#
+
 #std contr = .07758641225743652
 # w_PC = (1-1/(1+exp(-200*(delta_weight-max_LTD_IO_uncoupled*weight/1.2)))) : 1
 
