@@ -83,20 +83,20 @@ IO_rate_Coupled_STDP = PopulationRateMonitor(IO_Coupled_STDP)
 #####################################################################
 DCN_Coupled_STDP = NeuronGroup(N_Cells_DCN, model=DCN_Equations, threshold='v>Vcut', reset="v=Vr; w+=b", method='euler', name = 'DCN_Coupled_STDP',dt=t_Neuron)
 for dd in range(0,N_Cells_DCN,1):    
-    DCN_Coupled_STDP.C[dd] = DCN_C[dd]
-    DCN_Coupled_STDP.gL[dd] = DCN_gL[dd]
-    DCN_Coupled_STDP.EL[dd] = DCN_EL[dd]
-    DCN_Coupled_STDP.VT[dd] = DCN_VT[dd]
-    DCN_Coupled_STDP.DeltaT[dd] = DCN_DeltaT[dd]
-    DCN_Coupled_STDP.Vcut[dd] = DCN_Coupled_STDP.VT[dd] + 5*DCN_Coupled_STDP.DeltaT[dd]
-    DCN_Coupled_STDP.tauw[dd] = DCN_tauw[dd]
-    DCN_Coupled_STDP.a[dd] = DCN_a[dd]
-    DCN_Coupled_STDP.b[dd] = DCN_b[dd]
-    DCN_Coupled_STDP.Vr[dd] = DCN_Vr[dd]
-    DCN_Coupled_STDP.tauI[dd] = DCN_tauI[dd]
-    DCN_Coupled_STDP.I_PC_max[dd] = DCN_I_PC_max[dd]
-    DCN_Coupled_STDP.v = DCN_v[dd]
-    DCN_Coupled_STDP.I_intrinsic = DCN_I_intrinsic[dd]
+    DCN_Coupled_STDP.C[dd] = DCN_C
+    DCN_Coupled_STDP.gL[dd] = DCN_gL
+    DCN_Coupled_STDP.EL[dd] = DCN_EL
+    DCN_Coupled_STDP.VT[dd] = DCN_VT
+    DCN_Coupled_STDP.DeltaT[dd] = DCN_DeltaT
+    DCN_Coupled_STDP.Vcut[dd] = DCN_Coupled_STDP.VT + 5*DCN_Coupled_STDP.DeltaT
+    DCN_Coupled_STDP.tauw[dd] = DCN_tauw
+    DCN_Coupled_STDP.a[dd] = DCN_a
+    DCN_Coupled_STDP.b[dd] = DCN_b
+    DCN_Coupled_STDP.Vr[dd] = DCN_Vr
+    DCN_Coupled_STDP.tauI[dd] = DCN_tauI
+    DCN_Coupled_STDP.I_PC_max[dd] = DCN_I_PC_max
+    DCN_Coupled_STDP.v = DCN_v
+    DCN_Coupled_STDP.I_intrinsic = DCN_I_intrinsic
 ######### Monitors ###############
 DCN_Statemon_Coupled_STDP = StateMonitor(DCN_Coupled_STDP, ['v', 'I_PC','w'], record=True,dt=t_Monitor)
 DCN_Spikemon_Coupled_STDP = SpikeMonitor(DCN_Coupled_STDP)
