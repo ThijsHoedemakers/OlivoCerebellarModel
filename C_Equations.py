@@ -207,8 +207,8 @@ eqs_syn_Noise_PC_noSTDP = '''
 '''
 # ADD new_weight = weight+delta_weight
 eqs_syn_Noise_PC_STDP_coupled = '''
-                        y = clip(int(t/second-0.9),0,1) : 1
-                        y1 = clip(int(t/second-1.2),0,1) : 1
+                        y = clip(int(t/second-5),0,1) : 1
+                        y1 = clip(int(t/second-5.3),0,1) : 1
 
                         I : amp  # copy of the noise current
                         weight : 1  (constant)
@@ -240,8 +240,8 @@ eqs_syn_Noise_PC_STDP_coupled = '''
                       
                         freq_st_IO_coupled : 1
                         
-                        freq_dep : 1
-
+                        freq_dep_IO : 1
+                        freq_dep_PC : 1
                         std_f_IO_coupled : 1 # frequency short term
                         mean_freq_IO_coupled : 1 # frequency long term
                         max_LTD_IO_coupled : 1
@@ -265,8 +265,7 @@ eqs_syn_Noise_PC_STDP_uncoupled = '''
                         I : amp  # copy of the noise current
                         weight : 1  (constant)
                         new_weight = weight + delta_weight : 1 
-                    
-                        delta_weight = weight_PC + weight_IO : 1
+                        delta_weight = weight_PC + weight_IO: 1
                         
                         dweight_PC/dt = -y1*weight_PC/(tau+(y1-1)*second) : 1
                         dweight_IO/dt = -y1*weight_IO/(tau+(y1-1)*second): 1
@@ -274,8 +273,8 @@ eqs_syn_Noise_PC_STDP_uncoupled = '''
                         w_PC_uncoupled =(1-1/(1+exp(-200*(weight_PC-max_LTD_IO_uncoupled*weight/1.2)))) : 1                    
                         w_IO_uncoupled =(1/(1+exp(-200*(weight_IO+max_LTD_IO_uncoupled*weight/1.2)))) : 1
                         
-                        freq_dep : 1
-                        
+                        freq_dep_IO : 1
+                        freq_dep_PC : 1
                         maxDelay = 800*second : second
                         
                         tau = ceil(I/amp)*(y1*maxDelay*evalCont*(1-1/(1+exp(-100*(weight_PC+abs(weight_IO)-max_LTD_IO_uncoupled*new_weight)))))+(1-ceil(I/amp))*maxDelay : second

@@ -28,17 +28,17 @@ N_Cells_IO = Sims['N_Cells_IO']
 #####################################################################
 ########################### PURKINJE CELLS ##########################
 #####################################################################
-PC_C = rand_params(75,pF,N_Cells_PC,(1.0/N_Cells_PC))  #75*pF  #40 * pF  # 0.77*uF*cm**-2* #1090*pF
-PC_gL = rand_params(30,nS,N_Cells_PC,(1.0/N_Cells_PC))  #30 * nS
-PC_EL = rand_params(-70.6,mV,N_Cells_PC,(0.5/N_Cells_PC))  #-70.6 * mV
-PC_VT = rand_params(-50.4,mV,N_Cells_PC,(0.5/N_Cells_PC))  #-50.4 * mV
-PC_DeltaT = rand_params(2,mV,N_Cells_PC,(0.5/N_Cells_PC))  #2 * mV
-PC_tauw = rand_params(144,ms,N_Cells_PC,(2.0/N_Cells_PC))  #144*ms
-PC_a = rand_params(4,nS,N_Cells_PC,(0.5/N_Cells_PC))  #4*nS #2*PC_SingleNeuron.C[jj]/(144*ms) # 
-PC_b = rand_params(0.0805,nA,N_Cells_PC,(0.001/N_Cells_PC))  #0.0805*nA  #0*nA #
-PC_Vr = rand_params(-70.6,mV,N_Cells_PC,(0.5/N_Cells_PC))  #-70.6*mV
-PC_v = rand_params(-70.6,mV,N_Cells_PC,(0.5/N_Cells_PC))  #[-70.6*mV]*N_Cells_PC
-PC_I_intrinsic = rand_params(2,nA,N_Cells_PC,(0.2/N_Cells_PC))  #[2*nA]*N_Cells_PC
+PC_C = 75*pF*N_Cells_PC #rand_params(75,pF,N_Cells_PC,(1.0/N_Cells_PC))  #75*pF  #40 * pF  # 0.77*uF*cm**-2* #1090*pF
+PC_gL = 30*nS #rand_params(30,nS,N_Cells_PC,(1.0/N_Cells_PC))  #30 * nS
+PC_EL = -70.6 *mV #rand_params(-70.6,mV,N_Cells_PC,(0.5/N_Cells_PC))  #-70.6 * mV
+PC_VT = -50.4*mV #rand_params(-50.4,mV,N_Cells_PC,(0.5/N_Cells_PC))  #-50.4 * mV
+PC_DeltaT = 2*mV #rand_params(2,mV,N_Cells_PC,(0.5/N_Cells_PC))  #2 * mV
+PC_tauw = 144*ms #rand_params(144,ms,N_Cells_PC,(2.0/N_Cells_PC))  #144*ms
+PC_a = 4*nS#rand_params(4,nS,N_Cells_PC,(0.5/N_Cells_PC))  #4*nS #2*PC_SingleNeuron.C[jj]/(144*ms) # 
+PC_b = 0.0805*nA #rand_params(0.0805,nA,N_Cells_PC,(0.001/N_Cells_PC))  #0.0805*nA  #0*nA #
+PC_Vr = -70.6*mV #rand_params(-70.6,mV,N_Cells_PC,(0.5/N_Cells_PC))  #-70.6*mV
+PC_v = -70.6*mV #rand_params(-70.6,mV,N_Cells_PC,(0.5/N_Cells_PC))  #[-70.6*mV]*N_Cells_PC
+PC_I_intrinsic = 2*nA #rand_params(2,nA,N_Cells_PC,(0.2/N_Cells_PC))  #[2*nA]*N_Cells_PC
 #print('intrinsic currents PC',PC_I_intrinsic)
 #####################################################################
 ################### DEEP CEREBELLAR NUCLEI CELLS ####################

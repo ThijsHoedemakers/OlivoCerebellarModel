@@ -9,18 +9,18 @@ from C_Equations import *
 #####################################################################
 PC_Coupled_STDP = NeuronGroup(N_Cells_PC, model=PC_Equations, threshold='v>Vcut', reset="v=Vr; w+=b", method='euler', name = 'PC_Coupled_STDP',dt=t_Neuron)
 for jj in range(0,N_Cells_PC,1):
-    PC_Coupled_STDP.C[jj] = PC_C[jj]
-    PC_Coupled_STDP.gL[jj] = PC_gL[jj]
-    PC_Coupled_STDP.EL[jj] = PC_EL[jj]
-    PC_Coupled_STDP.VT[jj] = PC_VT[jj]
-    PC_Coupled_STDP.DeltaT[jj] = PC_DeltaT[jj]
-    PC_Coupled_STDP.Vcut[jj] = PC_Coupled_STDP.VT[jj] + 5*PC_Coupled_STDP.DeltaT[jj]
-    PC_Coupled_STDP.tauw[jj] = PC_tauw[jj]
-    PC_Coupled_STDP.a[jj] = PC_a[jj]
-    PC_Coupled_STDP.b[jj] = PC_b[jj]
-    PC_Coupled_STDP.Vr[jj] = PC_Vr[jj]
-    PC_Coupled_STDP.v[jj] = PC_v[jj]
-    PC_Coupled_STDP.I_intrinsic[jj] = PC_I_intrinsic[jj]
+    PC_Coupled_STDP.C[jj] = PC_C
+    PC_Coupled_STDP.gL[jj] = PC_gL
+    PC_Coupled_STDP.EL[jj] = PC_EL
+    PC_Coupled_STDP.VT[jj] = PC_VT
+    PC_Coupled_STDP.DeltaT[jj] = PC_DeltaT
+    PC_Coupled_STDP.Vcut[jj] = PC_Coupled_STDP.VT + 5*PC_Coupled_STDP.DeltaT
+    PC_Coupled_STDP.tauw[jj] = PC_tauw
+    PC_Coupled_STDP.a[jj] = PC_a
+    PC_Coupled_STDP.b[jj] = PC_b
+    PC_Coupled_STDP.Vr[jj] = PC_Vr
+    PC_Coupled_STDP.v[jj] = PC_v
+    PC_Coupled_STDP.I_intrinsic[jj] = PC_I_intrinsic
     #PC_I_intrinsic[jj]
 print('intrinsic current coupled =',PC_Coupled_STDP.I_intrinsic)
 PC_Statemon_Coupled_STDP = StateMonitor(PC_Coupled_STDP, ['v', 'w', 'I_Noise','I_intrinsic','tauw'], record=True,dt=t_Monitor)
