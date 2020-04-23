@@ -35,7 +35,7 @@ def rand_params(Parameter,Unit,N_Cells,Step):
     return Param_vector 
     
     
-def NoiseGenerator(number,noisetype,IC,durationInput,durationTotal,name):
+def NoiseGenerator(number,noisetype,IC,durSilence,durationInput,durationTotal,name):
     N_noise = number
     # create global variables, so they can be used in the other scripts as well
     global t_Neuron 
@@ -82,35 +82,11 @@ def NoiseGenerator(number,noisetype,IC,durationInput,durationTotal,name):
                 '''
         Input = NeuronGroup(N_noise, eqs, threshold='True', method='euler', name='Noise', dt=t_Neuron)
         Input.sine_amplitude = np.array(IC[number:(number+number)])*nA
-        #Input.sine_amplitude = np.array([IC[5], IC[6], IC[7], IC[8],IC[9]])*nA
         Input.sine_frequency = np.array(IC[number*2:])*2*pi*Hz
-        #eqs = '''
-                
-#                I = sine_amplitude*sin(sine_frequency*2*pi*t):amp
-#                sine_frequency = (exp(log(fmin)+(log(fmax)-log(fmin))*(0.5-#0.5*cos(2*pi*t/T))))*Hz : Hz
-#                sine_amplitude : amp
-#                T : second
-#                fmin: 1
-#                fmax: 1
-#                '''
-        #Input = NeuronGroup(N_noise, eqs, threshold='True', method='euler', name='Noise', dt=t_Neuron)
-        #Input.sine_amplitude = np.array(IC[number:(number+number)])*nA
-        #print(Input.sine_amplitude)
-        #Input.sine_amplitude = np.array([IC[5], IC[6], IC[7], IC[8],IC[9]])*nA
-        #Input.T = 1*second
-        #Input.fmin = np.array(IC[-2])#*2*pi*Hz
-        #Input.fmax = np.array(IC[-1])#*2*pi*Hz
-        #print(Input.fmin, Input.fmax)
-        #Input.sine_frequency = np.array([IC[10], IC[11],IC[12],IC[13],IC[14]])*2*pi* Hz
+
 
         Input_statemon = StateMonitor(Input, variables=['I'], record=True, dt=t_Neuron)
 
-        # initial condition
-        #Noise.sine_amplitude = IC[0] * nA
-        #Noise.sine_frequency = IC[1] * 2 * pi * Hz
-        # F and A of sine#2
-        #Noise.sine2_amplitude = IC[2] * nA
-        #Noise.sine2_frequency = IC[3] * 2 * pi * Hz
     elif noisetype == 'const' :
         print('Noise is of constant input')
         constValue = IC[0] *nA
@@ -121,50 +97,27 @@ def NoiseGenerator(number,noisetype,IC,durationInput,durationTotal,name):
         duration = 0
     else:
         print('Input type is not correct; chose OU,DS or const')
-        
-    
-    
 
     run(durationInput*ms)
-
-
-    #Input_created = Struct()
-    #Input_created.time = Input_statemon.t / ms
-    #Input_created.I = Input_statemon.I
     
-    #print('input before offset',Input_created.I)
-    #print(Input_created.I[0])
-    Is = np.zeros((number,int(durationTotal/(t_Neuron*1000))))
+    Is  = np.zeros((number,int((durationTotal)/(t_Neuron*1000))))
     Inp = Input_statemon.I
-    #plt.figure()
-    #plt.plot(Input_statemon.t,Is[0])
+
     for ii in range(0,number):
         Inp[ii] = Inp[ii]+np.ones(len(Inp[ii]))*IC[ii]*nA
-        #print(len(Inp[ii]))
-        Is[ii] =np.append(np.asarray(Inp[ii]),np.zeros(int((durationTotal-durationInput)/(t_Neuron*1000))))
-        #print(Is[ii])
-        
-    #Is[1] = Is[1]+np.ones(len(Is[1]))*IC[1]*nA
-    #Is[2] = Input_created.I[2]+np.ones(len(Input_created.I[2]))*IC[2]*nA
-    #Input_statemon.I[3] = Input_created.I[3]+np.ones(len(Input_created.I[3]))*IC[3]*nA   
-    #Input_statemon.I[4] = Input_created.I[4]+np.ones(len(Input_created.I[4]))*IC[4]*nA
-    #print(Is)
-    #plt.figure()
-    #plt.plot(Input_statemon.t,Input_statemon.sine_frequency[0])
-    #plt.show()
+        I2 = np.append(np.zeros(int(durSilence/(t_Neuron*1000))),Inp[ii])
+        Is[ii] = np.append(I2,np.zeros(int((durationTotal-durationInput-durSilence)/(t_Neuron*1000))))
+
     simT =int(durationTotal/1000)
     step = int(simT/((t_Neuron/ms)/1000))
     t = np.linspace(0,simT,step)
     t = np.round(t,6)
     Input_created = {'I':Is,'time':t}
-    #print(Input_created)
-    #local = datetime.datetime.now()
-    #sio.savemat(namesp, mdict={'Input_created': Input_created})
+   
     with open(namesp, 'wb') as nn:
         pickle.dump(Input_created, nn, pickle.HIGHEST_PROTOCOL)
         print('Data is saved')
-    #Noise_mat = Noise_created
-    #Noise = Noise_mat[0][0]
+
     global Noise_t 
     Noise_t= Input_created['time']
     global Noise_I 

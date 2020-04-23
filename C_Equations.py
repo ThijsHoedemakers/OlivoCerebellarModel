@@ -259,8 +259,8 @@ eqs_syn_Noise_PC_STDP_coupled = '''
 
 '''
 eqs_syn_Noise_PC_STDP_uncoupled = '''
-                        y = clip(int(t/second-0.9),0,1) : 1
-                        y1 = clip(int(t/second-1.2),0,1) : 1
+                        y = clip(int(t/second-5),0,1) : 1
+                        y1 = clip(int(t/second-5.3),0,1) : 1
 
                         I : amp  # copy of the noise current
                         weight : 1  (constant)

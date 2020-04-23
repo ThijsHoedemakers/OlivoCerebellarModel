@@ -10,9 +10,9 @@ from D_NeuronGroups_Plasticity import *
 
 
 
-t_learn = 5
-per_above_lt = 1.02
-k_freq = 2
+t_learn = 10
+per_above_lt = 1.1
+k_freq = 0.3
 print('t_learn =',t_learn)
 
 
@@ -168,7 +168,8 @@ S_N_PC_Coupled = Synapses(conn_N_PC_Coupled, PC_Coupled_STDP,'''
                            weight_PC_pre += max_LTP*w_PC_coupled_pre*input_dep*freq_dep_PC_pre
                           ''' ,
                           method='euler',name = 'dummy_PC_Coupled',dt=t_Neuron)
-    #max_LTP*input_dep*freq_dep                        
+#
+#max_LTP*input_dep*freq_dep                        
 # max_LTP = y_pre*((max_LTD_IO_coupled_pre*weight_pre)/(f_lt_PC_pre*60+(y_pre-1)))
 #Q: how much ltp? Same as depression?
 
@@ -187,8 +188,6 @@ S_IO_N_Coupled = Synapses(IO_Coupled_STDP, conn_N_PC_Coupled,
                            on_pre='''
                            
                         input_dep_post = ((I_post/1e-9)/amp)/(clip((I_post/1e-9)/amp,(amplitude_post+offset_post),10)) 
-                        distribution_eval = y_post*(exp(-(freq_st_IO_coupled_post-mean_freq_IO_coupled_post)**2/((y_post-1)+2*std_f_IO_coupled_post**2))/((y_post-1)+std_f_IO_coupled_post*sqrt(2*pi)))
-                        distribution_mean = y_post*(exp(-(mean_freq_IO_coupled_post-mean_freq_IO_coupled_post)**2/((y_post-1)+2*std_f_IO_coupled_post**2))/((y_post-1)+std_f_IO_coupled_post*sqrt(2*pi)))
                         
                         freq_dep_IO_post = (1/(1+exp(-k_freq*(f_st_PC_coupled_post-per_above_lt*f_lt_PC_coupled_post))))
                         max_LTD = y_post*((max_LTD_IO_coupled_post*new_weight_post)/(t_learn*1e2*mean_freq_IO_coupled_post+(y_post-1)))
@@ -196,6 +195,8 @@ S_IO_N_Coupled = Synapses(IO_Coupled_STDP, conn_N_PC_Coupled,
                         weight_IO_post += -max_LTD*w_IO_coupled_post*input_dep*freq_dep_IO_post
                         '''
                           ,method='euler',name = 'dummy_IO_Coupled',dt=t_Neuron)  # where f is some function
+#
+
 #freq_dep_post = int(y_post*(f_lt_PC_coupled_post/((y_post-1)+f_st_PC_coupled_post)))
 
 #y_post*distribution_eval/(distribution_mean+y_post-1)
@@ -345,10 +346,10 @@ S_N_PC_Uncoupled = Synapses(conn_N_PC_Uncoupled, PC_Uncoupled_STDP,'''
 
                             max_LTP = y_pre*((max_LTD_IO_uncoupled_pre*new_weight_pre)/(f_lt_PC_uncoupled_pre*t_learn+(y_pre-1)))
 
-                            weight_PC_pre += max_LTP*w_PC_uncoupled_pre*input_dep*freq_dep_PC_pre
+                            weight_PC_pre += max_LTP*w_PC_uncoupled_pre*input_dep*freq_dep_PC_pre  
                             '''
                             , method='euler',name = 'dummy_PC_Uncoupled',dt=t_Neuron)
-                            
+ #                         
 
 #print(S_N_PC_Uncoupled)
 #print(S_N_PC_Uncoupled.on_post)
@@ -359,8 +360,6 @@ S_N_PC_Uncoupled.connect(i=i_dPC,j =j_dPC)
 #(1e-9*dtt*abs((I_post*weight_post)/nA)*(weight_post*max_LTD))/((offset_post+amplitude_post)*weight_post*1e-9)
 S_IO_N_Uncoupled = Synapses(IO_Uncoupled_STDP, conn_N_PC_Uncoupled, on_pre='''
                         input_dep = ((I_post/1e-9)/amp)/(clip((I_post/1e-9)/amp,(amplitude_post+offset_post),10)) 
-                        distribution_eval = y_post*(exp(-(freq_st_IO_uncoupled_post-mean_freq_IO_uncoupled_post)**2/((y_post-1)+2*std_f_IO_uncoupled_post**2))/((y_post-1)+std_f_IO_uncoupled_post*sqrt(2*pi)))
-                        distribution_mean = y_post*(exp(-(mean_freq_IO_uncoupled_post-mean_freq_IO_uncoupled_post)**2/((y_post-1)+2*std_f_IO_uncoupled_post**2))/((y_post-1)+std_f_IO_uncoupled_post*sqrt(2*pi)))
 
                         freq_dep_IO_post = (1/(1+exp(-k_freq*(f_st_PC_uncoupled_post-per_above_lt*f_lt_PC_uncoupled_post))))
                                              
@@ -368,6 +367,9 @@ S_IO_N_Uncoupled = Synapses(IO_Uncoupled_STDP, conn_N_PC_Uncoupled, on_pre='''
                         weight_IO_post += -max_LTD*w_IO_uncoupled_post*input_dep*freq_dep_IO_post
                           ''', 
                             method='euler',name = 'dummy_IO_Uncoupled',dt=t_Neuron)  # where f is some function
+
+#
+
   #                        -max_LTD*input_dep*freq_dep
 
 #y_post*distribution_eval/(distribution_mean+y_post-1)

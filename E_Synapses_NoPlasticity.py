@@ -84,6 +84,14 @@ reshaped_weight = norm_coupled/ column_sum[np.newaxis,:]
 reshaped_weight = reshaped_weight.reshape(n_Noise*n_PC)
 
 S_Coupled_noSTDP.noise_weight=reshaped_weight
+with open(namenoise+'finalweights.pickle', 'rb') as sims:
+    Weights = pickle.load(sims)
+if namenoise.find('adapt') != -1:
+    S_Coupled_noSTDP.noise_weight = Weights['fw_coupled']
+else:
+    S_Coupled_noSTDP.noise_weight = 0.5*np.ones((n_Noise*n_PC))
+    
+        
 print('new weights no STDP coupled', S_Coupled_noSTDP.noise_weight)
 
 Synapse_IO_PC_Coupled_noSTDP = Synapses(IO_Coupled_noSTDP, PC_Coupled_noSTDP, on_pre ='w +=(0.005*nA)', delay=2*ms, name = 'IO_PC_Synapse_Coupled_noSTDP',method = 'euler',dt=t_Neuron)
@@ -169,6 +177,13 @@ reshaped_weightUnC = norm_coupled/ column_sum[np.newaxis,:]
 reshaped_weightUnC = reshaped_weight.reshape(n_Noise*n_PC)
 print('new weights no STDP uncoupled', reshaped_weightUnC)
 S_Uncoupled_noSTDP.noise_weight=reshaped_weightUnC
+
+if namenoise.find('adapt') != -1:
+    S_Uncoupled_noSTDP.noise_weight = Weights['fw_uncoupled']
+else:
+    S_Uncoupled_noSTDP.noise_weight = 0.5*np.ones((n_Noise*n_PC))
+
+
 
 S_statemon = StateMonitor(S_Uncoupled_noSTDP, variables=['noise_weight','I_Noise'], record=True,dt=t_Monitor)
 
