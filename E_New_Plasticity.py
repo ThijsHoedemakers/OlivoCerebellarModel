@@ -21,7 +21,7 @@ fit_p2 = np.polyfit(freq_part2, dm_part2,3)
 def f(t):
     
     # The time parameters (moving average)
-    PC_long_t = t_learn/2 # how much time the average of IO frequency is taken
+    PC_long_t = t_learn # how much time the average of IO frequency is taken
     PC_short_t = 0.15
     
     IO_long_t =  20 # how much time the average of IO frequency is taken

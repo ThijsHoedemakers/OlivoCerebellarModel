@@ -68,7 +68,7 @@ I_PC_max : amp
 #####################################################################
 eqs_IO_V = '''
 dVs/dt = (-(I_ds + I_ls + I_Na + I_Ca_l + I_K_dr + I_h + I_as) + Iapp_s + I_IO_DCN)/Cm : volt
-dVd/dt = (-(I_sd + I_ld + I_Ca_h + I_K_Ca + I_c + I_extra) + Iapp_d)/Cm : volt
+dVd/dt = (-(I_sd + I_ld + I_Ca_h + I_K_Ca + I_c) + Iapp_d)/Cm : volt
 dVa/dt = (-(I_K_a + I_sa + I_la + I_Na_a))/Cm : volt
 dI_IO_DCN/dt = (0*uA*cm**-2 - I_IO_DCN)/(30*ms) : amp*meter**-2
 I_c : metre**-2*amp
@@ -89,7 +89,6 @@ I_h     = g_h*q*(Vs-V_h)             : metre**-2*amp
 I_K_s   = g_K_s*(x_s**4)*(Vs-V_K)    : metre**-2*amp
 '''
 eqs_IO_Iden = '''
-I_extra = a_value                    : metre**-2*amp
 I_sd    = (g_int/(1-p))*(Vd-Vs)      : metre**-2*amp
 I_ld    = g_ld*(Vd-V_l)              : metre**-2*amp
 I_Ca_h  = g_Ca_h*r*r*(Vd-V_Ca)       : metre**-2*amp
@@ -182,7 +181,6 @@ g_la   : siemens/meter**2
 g_K_s   : siemens/meter**2
 p : 1
 p2 : 1
-a_value : metre**-2*amp
 '''
 
 eqs_IO = eqs_IO_beta

@@ -10,26 +10,17 @@ from D_NeuronGroups_Plasticity import *
 
 
 
-t_learn = 10
+t_learn = 5
 per_above_lt = 1.1
 k_freq = 0.3
-print('t_learn =',t_learn)
+#print('t_learn =',t_learn)
 
 
 
 n_Noise = len(Noise)
 n_PC = len(PC_Coupled_STDP)
 n_IO = len(IO_Coupled_STDP)
-print('number of IO',n_IO)
-# constants LTP
-timebeforespike = 0.000086*second
-max_LTP_per = 0.2
-u_var = 60*150     # max modulation at 60s assuming 100Hz firing rate of PC
-n_var = (1e-15)/3  # normalisation factor 
 
-# constants LTD
-dtt=0.33/(40*3*4)
-max_LTD = 0.2
 
 ### Fixed connectivity
 
@@ -108,7 +99,7 @@ for kk in range(0,n_Noise):
     ofs_c[kk*10:kk*10+10]=np.ones(n_PC)*input_params[kk]
     ampl_c[kk*10:kk*10+10]=np.ones(n_PC)*input_params[n_Noise+kk]
     freq_c[kk*10:kk*10+10]=np.ones(n_PC)*input_params[n_Noise*2+kk]
-print('offset',ofs_c, 'ampl',ampl_c,'freq',freq_c)
+#print('offset',ofs_c, 'ampl',ampl_c,'freq',freq_c)
 conn_N_PC_Coupled.offset = ofs_c
 conn_N_PC_Coupled.amplitude = ampl_c
 #print(conn_N_PC_Uncoupled.amplitude)
@@ -121,19 +112,19 @@ conn_N_PC_Coupled.conn_target = 'i % n_PC' # i.e., 0, 1, 0, 1, 0, 1, 0, 1, 0, 1
 conn_N_PC_Coupled.indx = 'conn_target+(10*rand())'
 # Set the static weight in some way (can refer to noise_source and PC_target)
 #original
-conn_N_PC_Coupled.weight = '1-(abs(((conn_target-noise_source)/N_Cells_PC)))'
-print(conn_N_PC_Coupled.weight)
+#conn_N_PC_Coupled.weight = '1-(abs(((conn_target-noise_source)/N_Cells_PC)))'
+#print(conn_N_PC_Coupled.weight)
 #print('weights before', conn_N_PC_Coupled.weight)
 # reshape the values to a matrix of size [#input #PC]
-norm_coupled=conn_N_PC_Coupled.weight[:].reshape(n_Noise,n_PC)
+#norm_coupled=conn_N_PC_Coupled.weight[:].reshape(n_Noise,n_PC)
 #print('reshaped weigth',norm_coupled)
 # calculate the sum of the column
-column_sum= norm_coupled.sum(axis=0)
+#column_sum= norm_coupled.sum(axis=0)
 #print('column sum =', column_sum)
 # normalize by the weight of the columns
-reshaped_weight = norm_coupled/ column_sum[np.newaxis,:]
+#reshaped_weight = norm_coupled/ column_sum[np.newaxis,:]
 # reshape it to the form of 'conn_N_PC_Coupled.weight'
-reshaped_weight = reshaped_weight.reshape(n_Noise*n_PC)
+#reshaped_weight = reshaped_weight.reshape(n_Noise*n_PC)
 
 #print('final static weights STDP',reshaped_weight)
 conn_N_PC_Coupled.weight = 0.5*np.ones((n_Noise*n_PC))
@@ -149,7 +140,7 @@ copy_noise_Coupled.connect(i=i_ind, j=j_ind)
 
 ## uncomment to see connectivity Noise-Dummyneuron
 #visualise(copy_noise_Coupled)
-print('new weights', conn_N_PC_Coupled.weight)
+print('initial weights', conn_N_PC_Coupled.weight)
 
 # Synapses to Purkinje cells
 # original
@@ -300,7 +291,7 @@ for kk in range(0,n_Noise):
     ofs[kk*10:kk*10+10]=np.ones(n_PC)*input_params[kk]
     ampl[kk*10:kk*10+10]=np.ones(n_PC)*input_params[n_Noise+kk]
     freq[kk*10:kk*10+10]=np.ones(n_PC)*input_params[n_Noise*2+kk]
-print('offset',ofs, 'ampl',ampl,'freq',freq)
+#print('offset',ofs, 'ampl',ampl,'freq',freq)
 
 conn_N_PC_Uncoupled.offset = ofs
 conn_N_PC_Uncoupled.amplitude = ampl

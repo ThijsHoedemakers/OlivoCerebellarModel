@@ -43,7 +43,7 @@ with open(volt, 'wb') as vc:
     pickle.dump(VoltCell, vc, pickle.HIGHEST_PROTOCOL)
     print('Voltage Cells are saved')
 
-    ### Spike times
+### Spike times
 
 SpikeTimes = {'PC_coupled':list(PC_Spikemon_Coupled_STDP.spike_trains().values()),
               'DCN_coupled':list(DCN_Spikemon_Coupled_STDP.spike_trains().values()),
@@ -59,3 +59,12 @@ Population = {'PC_uncoupled':PC_rate_Uncoupled_STDP.smooth_rate(window='gaussian
 with open(poprate, 'wb') as ka:
     pickle.dump(Population, ka, pickle.HIGHEST_PROTOCOL)
     print('population rates saved')
+    
+    
+final_weight_coupled = [mon_N_PC_Coupled.new_weight[k][-1] for k in range(0,n_Noise*n_PC)]
+final_weight_uncoupled = [mon_N_PC_Uncoupled.new_weight[k][-1] for k in range(0,n_Noise*n_PC)]
+fw={'fw_coupled':final_weight_coupled,'fw_uncoupled':final_weight_uncoupled}
+finalweight = globname+'finalweights.pickle'
+with open(finalweight, 'wb') as fws:
+    pickle.dump(fw, fws, pickle.HIGHEST_PROTOCOL)
+    print('Final weights saved')
