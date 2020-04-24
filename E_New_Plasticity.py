@@ -21,8 +21,8 @@ fit_p2 = np.polyfit(freq_part2, dm_part2,3)
 def f(t):
     
     # The time parameters (moving average)
-    PC_long_t = 1.5 # how much time the average of IO frequency is taken
-    PC_short_t = 0.3
+    PC_long_t = t_learn # how much time the average of IO frequency is taken
+    PC_short_t = 0.15
     
     IO_long_t =  20 # how much time the average of IO frequency is taken
     IO_short_t = 0.8
@@ -148,11 +148,11 @@ def f(t):
 
             PC_short = (PC_long_term_variable_coupled[PC_long_term_variable_coupled>(t/second-PC_short_t)])
             
-            
+            PC_long = (PC_long_term_variable_coupled[PC_long_term_variable_coupled>(t/second-PC_long_t)])
             #PC_short = (PC_spike_list_coupled[k][PC_spike_list_coupled[k]>(t-PC_short_t*second)])/second
             #PC_long_term_variable_coupled = (PC_spike_list_coupled[k][PC_spike_list_coupled[k]>(0.5*second)])/second
             #PC_spike_list_coupled[k][-15:]/second 
-            nrPCspikes_coupled = (len(PC_long_term_variable_coupled)/(t/second-0.5))
+            PC_long_term_variable_coupled = len(PC_long)/(min(t/second,PC_long_t))
             
             PC_short_term_variable_coupled = len(PC_short)/(PC_short_t)
             #PC_long_term_variable_coupled = (len(PC_long_term_variable_coupled)/(t/second-0.5))
@@ -174,7 +174,7 @@ def f(t):
             conn_N_PC_Coupled.f_st_PC_coupled[k]=conn_N_PC_Coupled.f_st_PC_coupled[k+10] = PC_short_term_variable_coupled
             #conn_N_PC_Coupled.f_st_PC[k]=conn_N_PC_Coupled.f_st_PC[k+10] = len(PC_short_term_variable_coupled)/PC_short_t
                 # calculate the mean frequency long term
-            conn_N_PC_Coupled.f_lt_PC_coupled[k]=conn_N_PC_Coupled.f_lt_PC_coupled[k+10] = nrPCspikes_coupled
+            conn_N_PC_Coupled.f_lt_PC_coupled[k]=conn_N_PC_Coupled.f_lt_PC_coupled[k+10] = PC_long_term_variable_coupled
             #np.mean(1/stat.isi(PC_long_term_variable_coupled))
             #np.mean(1/stat.isi(PC_long_term_variable_coupled)) 
             
@@ -194,12 +194,15 @@ def f(t):
             PC_long_term_variable_uncoupled = (PC_spike_list_uncoupled[k][PC_spike_list_uncoupled[k]>(0.5*second)])/second
             
             PC = (PC_long_term_variable_uncoupled[PC_long_term_variable_uncoupled>(t/second-PC_short_t)])
+            
+            PC_long =  (PC_long_term_variable_uncoupled[PC_long_term_variable_uncoupled>(t/second-PC_long_t)])
             #PC_long_term_variable_uncoupled = (PC_spike_list_uncoupled[k][PC_spike_list_uncoupled[k]>(0.5*second)])/second
             #PC_spike_list_coupled[k][-15:]/second 
             
             PC_short_term_variable_uncoupled = len(PC)/(PC_short_t)
             
-            nrPCspikes_uncoupled = len(PC_long_term_variable_uncoupled)/(t/second-0.5)
+            PC_long_term_variable_uncoupled = len(PC_long)/(min(t/second,PC_long_t))
+            #nrPCspikes_uncoupled = len(PC_long_term_variable_uncoupled)/(t/second-0.5)
             
             
             #(PC_spike_list_uncoupled[k][PC_spike_list_uncoupled[k]>(t-PC_long_t*second)])/second
@@ -213,9 +216,12 @@ def f(t):
            # if len(short_term_variable_coupled)>1:
                 # calculate the mean frequency short term
             conn_N_PC_Uncoupled.f_st_PC_uncoupled[k]=conn_N_PC_Uncoupled.f_st_PC_uncoupled[k+10] = PC_short_term_variable_uncoupled 
+            
             #conn_N_PC_Coupled.f_st_PC[k]=conn_N_PC_Coupled.f_st_PC[k+10] = len(PC_short_term_variable_coupled)/PC_short_t
                 # calculate the mean frequency long term
-            conn_N_PC_Uncoupled.f_lt_PC_uncoupled[k]=conn_N_PC_Uncoupled.f_lt_PC_uncoupled[k+10] = nrPCspikes_uncoupled
+            conn_N_PC_Uncoupled.f_lt_PC_uncoupled[k]=conn_N_PC_Uncoupled.f_lt_PC_uncoupled[k+10] = PC_long_term_variable_uncoupled
+            
+            
             #np.mean(1/stat.isi(PC_long_term_variable_uncoupled))
             #np.mean(1/stat.isi(PC_long_term_variable_coupled)) 
     

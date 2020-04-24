@@ -11,25 +11,16 @@ from D_NeuronGroups_Plasticity import *
 
 
 t_learn = 5
-per_above_lt = 1.02
-k_freq = 2
-print('t_learn =',t_learn)
+per_above_lt = 1.1
+k_freq = 0.3
+#print('t_learn =',t_learn)
 
 
 
 n_Noise = len(Noise)
 n_PC = len(PC_Coupled_STDP)
 n_IO = len(IO_Coupled_STDP)
-print('number of IO',n_IO)
-# constants LTP
-timebeforespike = 0.000086*second
-max_LTP_per = 0.2
-u_var = 60*150     # max modulation at 60s assuming 100Hz firing rate of PC
-n_var = (1e-15)/3  # normalisation factor 
 
-# constants LTD
-dtt=0.33/(40*3*4)
-max_LTD = 0.2
 
 ### Fixed connectivity
 
@@ -96,8 +87,8 @@ else:
 # This represents the noise-PC synapses:
 
 
-conn_N_PC_Coupled = NeuronGroup(n_Noise*n_PC, eqs_syn_Noise_PC_STDP, method='euler',name = 'dummy_Coupled',dt=t_Neuron)
-mon_N_PC_Coupled = StateMonitor(conn_N_PC_Coupled , ['noise_source','PC_target','weight','I','new_weight', 'delta_weight', 'weight_PC','weight_IO','f_lt_PC_coupled','f_st_PC_coupled','max_LTD_IO_coupled','freq_dep', 'input_dep','w_PC_coupled','w_IO_coupled'], record=True, dt=t_Monitor)
+conn_N_PC_Coupled = NeuronGroup(n_Noise*n_PC, eqs_syn_Noise_PC_STDP_coupled, method='euler',name = 'dummy_Coupled',dt=t_Neuron)
+mon_N_PC_Coupled = StateMonitor(conn_N_PC_Coupled , ['noise_source','PC_target','weight','I','new_weight', 'delta_weight', 'weight_PC','weight_IO','f_lt_PC_coupled','f_st_PC_coupled','max_LTD_IO_coupled','freq_dep_PC', 'freq_dep_IO', 'input_dep','w_PC_coupled','w_IO_coupled','evalCont','tau'], record=True, dt=t_Monitor)
 #,'freq_st_IO_coupled','max_LTD_IO_coupled','mean_freq_IO_coupled', 'std_f_IO_coupled','f_st_PC_coupled','f_lt_PC_coupled'
 # Set up the labels
 ofs_c = np.zeros(n_Noise*n_PC)
@@ -108,7 +99,7 @@ for kk in range(0,n_Noise):
     ofs_c[kk*10:kk*10+10]=np.ones(n_PC)*input_params[kk]
     ampl_c[kk*10:kk*10+10]=np.ones(n_PC)*input_params[n_Noise+kk]
     freq_c[kk*10:kk*10+10]=np.ones(n_PC)*input_params[n_Noise*2+kk]
-print('offset',ofs_c, 'ampl',ampl_c,'freq',freq_c)
+#print('offset',ofs_c, 'ampl',ampl_c,'freq',freq_c)
 conn_N_PC_Coupled.offset = ofs_c
 conn_N_PC_Coupled.amplitude = ampl_c
 #print(conn_N_PC_Uncoupled.amplitude)
@@ -121,19 +112,19 @@ conn_N_PC_Coupled.conn_target = 'i % n_PC' # i.e., 0, 1, 0, 1, 0, 1, 0, 1, 0, 1
 conn_N_PC_Coupled.indx = 'conn_target+(10*rand())'
 # Set the static weight in some way (can refer to noise_source and PC_target)
 #original
-conn_N_PC_Coupled.weight = '1-(abs(((conn_target-noise_source)/N_Cells_PC)))'
-print(conn_N_PC_Coupled.weight)
+#conn_N_PC_Coupled.weight = '1-(abs(((conn_target-noise_source)/N_Cells_PC)))'
+#print(conn_N_PC_Coupled.weight)
 #print('weights before', conn_N_PC_Coupled.weight)
 # reshape the values to a matrix of size [#input #PC]
-norm_coupled=conn_N_PC_Coupled.weight[:].reshape(n_Noise,n_PC)
+#norm_coupled=conn_N_PC_Coupled.weight[:].reshape(n_Noise,n_PC)
 #print('reshaped weigth',norm_coupled)
 # calculate the sum of the column
-column_sum= norm_coupled.sum(axis=0)
+#column_sum= norm_coupled.sum(axis=0)
 #print('column sum =', column_sum)
 # normalize by the weight of the columns
-reshaped_weight = norm_coupled/ column_sum[np.newaxis,:]
+#reshaped_weight = norm_coupled/ column_sum[np.newaxis,:]
 # reshape it to the form of 'conn_N_PC_Coupled.weight'
-reshaped_weight = reshaped_weight.reshape(n_Noise*n_PC)
+#reshaped_weight = reshaped_weight.reshape(n_Noise*n_PC)
 
 #print('final static weights STDP',reshaped_weight)
 conn_N_PC_Coupled.weight = 0.5*np.ones((n_Noise*n_PC))
@@ -149,7 +140,7 @@ copy_noise_Coupled.connect(i=i_ind, j=j_ind)
 
 ## uncomment to see connectivity Noise-Dummyneuron
 #visualise(copy_noise_Coupled)
-print('new weights', conn_N_PC_Coupled.weight)
+print('initial weights', conn_N_PC_Coupled.weight)
 
 # Synapses to Purkinje cells
 # original
@@ -162,15 +153,14 @@ S_N_PC_Coupled = Synapses(conn_N_PC_Coupled, PC_Coupled_STDP,'''
                                     I_Noise_post = (new_weight_pre)*I_pre : amp (summed)''',
                             on_post='''
                            input_dep = ((I_pre/1e-9)/amp)/(clip((I_pre/1e-9)/amp,(amplitude_pre+offset_pre),10)) 
-                           freq_dep = (1/(1+exp(-k_freq*(f_st_PC_coupled_pre-per_above_lt*f_lt_PC_coupled_pre))))
+                           freq_dep_PC_pre = (1/(1+exp(-k_freq*(f_st_PC_coupled_pre-per_above_lt*f_lt_PC_coupled_pre))))
                            
-                           w_PC_coupled_pre = (1-1/(1+exp(-200*(delta_weight_pre-max_LTD_IO_coupled_pre*weight_pre/1.2))))
-
-                           max_LTP = y_pre*((max_LTD_IO_coupled_pre*weight_pre)/(f_lt_PC_coupled_pre*t_learn+(y_pre-1)))
-                           weight_PC_pre += max_LTP*w_PC_coupled_pre*input_dep*freq_dep
+                           max_LTP = y_pre*((max_LTD_IO_coupled_pre*new_weight_pre)/(f_lt_PC_coupled_pre*t_learn+(y_pre-1)))
+                           weight_PC_pre += max_LTP*w_PC_coupled_pre*input_dep*freq_dep_PC_pre
                           ''' ,
                           method='euler',name = 'dummy_PC_Coupled',dt=t_Neuron)
-    #max_LTP*input_dep*freq_dep                        
+#
+#max_LTP*input_dep*freq_dep                        
 # max_LTP = y_pre*((max_LTD_IO_coupled_pre*weight_pre)/(f_lt_PC_pre*60+(y_pre-1)))
 #Q: how much ltp? Same as depression?
 
@@ -189,19 +179,15 @@ S_IO_N_Coupled = Synapses(IO_Coupled_STDP, conn_N_PC_Coupled,
                            on_pre='''
                            
                         input_dep_post = ((I_post/1e-9)/amp)/(clip((I_post/1e-9)/amp,(amplitude_post+offset_post),10)) 
-                        distribution_eval = y_post*(exp(-(freq_st_IO_coupled_post-mean_freq_IO_coupled_post)**2/((y_post-1)+2*std_f_IO_coupled_post**2))/((y_post-1)+std_f_IO_coupled_post*sqrt(2*pi)))
-                        distribution_mean = y_post*(exp(-(mean_freq_IO_coupled_post-mean_freq_IO_coupled_post)**2/((y_post-1)+2*std_f_IO_coupled_post**2))/((y_post-1)+std_f_IO_coupled_post*sqrt(2*pi)))
                         
-                        freq_dep_post = (1/(1+exp(-k_freq*(f_st_PC_coupled_post-per_above_lt*f_lt_PC_coupled_post))))
-                        max_LTD = y_post*((max_LTD_IO_coupled_post*weight_post)/(t_learn*1e2*mean_freq_IO_coupled_post+(y_post-1)))
-                        
-                       
-
-                        w_IO_coupled_post = (1/(1+exp(-200*(delta_weight_post+max_LTD_IO_coupled_post*weight_post/1.2))))
-                        
-                        weight_IO_post += -max_LTD*w_IO_coupled_post*input_dep*freq_dep
+                        freq_dep_IO_post = (1/(1+exp(-k_freq*(f_st_PC_coupled_post-per_above_lt*f_lt_PC_coupled_post))))
+                        max_LTD = y_post*((max_LTD_IO_coupled_post*new_weight_post)/(t_learn*1e2*mean_freq_IO_coupled_post+(y_post-1)))
+                                                
+                        weight_IO_post += -max_LTD*w_IO_coupled_post*input_dep*freq_dep_IO_post
                         '''
                           ,method='euler',name = 'dummy_IO_Coupled',dt=t_Neuron)  # where f is some function
+#
+
 #freq_dep_post = int(y_post*(f_lt_PC_coupled_post/((y_post-1)+f_st_PC_coupled_post)))
 
 #y_post*distribution_eval/(distribution_mean+y_post-1)
@@ -292,8 +278,8 @@ IO_synapse_Coupled_STDP.connect()
 # This represents the noise-PC synapses:
 n_Noise = len(Noise)
 n_PC = len(PC_Uncoupled_STDP)
-conn_N_PC_Uncoupled = NeuronGroup(n_Noise*n_PC, eqs_syn_Noise_PC_STDP, method='euler',name = 'dummy_Uncoupled',dt=t_Neuron)
-mon_N_PC_Uncoupled = StateMonitor(conn_N_PC_Uncoupled , ['weight','I','new_weight','delta_weight','weight_PC','weight_IO','f_lt_PC_uncoupled','f_st_PC_uncoupled','max_LTD_IO_uncoupled','w_PC_uncoupled','w_IO_uncoupled','freq_dep'], record=True, dt=t_Monitor)
+conn_N_PC_Uncoupled = NeuronGroup(n_Noise*n_PC, eqs_syn_Noise_PC_STDP_uncoupled, method='euler',name = 'dummy_Uncoupled',dt=t_Neuron)
+mon_N_PC_Uncoupled = StateMonitor(conn_N_PC_Uncoupled , ['weight','I','new_weight','delta_weight','weight_PC','weight_IO','f_lt_PC_uncoupled','f_st_PC_uncoupled','max_LTD_IO_uncoupled','w_PC_uncoupled','w_IO_uncoupled','freq_dep_PC', 'freq_dep_IO','evalCont','tau'], record=True, dt=t_Monitor)
 #'max_LTD_IO_uncoupled','mean_freq_IO_uncoupled','distribution_mean','distribution_eval', 'freq_st_IO_uncoupled','std_f_IO_uncoupled','f_lt_PC_uncoupled','f_st_PC_uncoupled'
 # Set up the labels
 ofs = np.zeros(n_Noise*n_PC)
@@ -305,7 +291,7 @@ for kk in range(0,n_Noise):
     ofs[kk*10:kk*10+10]=np.ones(n_PC)*input_params[kk]
     ampl[kk*10:kk*10+10]=np.ones(n_PC)*input_params[n_Noise+kk]
     freq[kk*10:kk*10+10]=np.ones(n_PC)*input_params[n_Noise*2+kk]
-print('offset',ofs, 'ampl',ampl,'freq',freq)
+#print('offset',ofs, 'ampl',ampl,'freq',freq)
 
 conn_N_PC_Uncoupled.offset = ofs
 conn_N_PC_Uncoupled.amplitude = ampl
@@ -347,15 +333,14 @@ S_N_PC_Uncoupled = Synapses(conn_N_PC_Uncoupled, PC_Uncoupled_STDP,'''
                                     I_Noise_post = (new_weight_pre)*I_pre : amp (summed)''',
                             on_post='''  
                             input_dep = ((I_pre/1e-9)/amp)/(clip((I_pre/1e-9)/amp,(amplitude_pre+offset_pre),10)) 
-                            freq_dep_pre = (1/(1+exp(-k_freq*(f_st_PC_uncoupled_pre-per_above_lt*f_lt_PC_uncoupled_pre))))
+                            freq_dep_PC_pre = (1/(1+exp(-k_freq*(f_st_PC_uncoupled_pre-per_above_lt*f_lt_PC_uncoupled_pre))))
 
-                            max_LTP = y_pre*((max_LTD_IO_uncoupled_pre*weight_pre)/(f_lt_PC_uncoupled_pre*t_learn+(y_pre-1)))
-                            w_PC_uncoupled_pre = (1-1/(1+exp(-200*(delta_weight_pre-max_LTD_IO_uncoupled_pre*weight_pre/1.2))))
+                            max_LTP = y_pre*((max_LTD_IO_uncoupled_pre*new_weight_pre)/(f_lt_PC_uncoupled_pre*t_learn+(y_pre-1)))
 
-                            weight_PC_pre += max_LTP*w_PC_uncoupled_pre*input_dep*freq_dep_pre
+                            weight_PC_pre += max_LTP*w_PC_uncoupled_pre*input_dep*freq_dep_PC_pre  
                             '''
                             , method='euler',name = 'dummy_PC_Uncoupled',dt=t_Neuron)
-                            
+ #                         
 
 #print(S_N_PC_Uncoupled)
 #print(S_N_PC_Uncoupled.on_post)
@@ -366,17 +351,16 @@ S_N_PC_Uncoupled.connect(i=i_dPC,j =j_dPC)
 #(1e-9*dtt*abs((I_post*weight_post)/nA)*(weight_post*max_LTD))/((offset_post+amplitude_post)*weight_post*1e-9)
 S_IO_N_Uncoupled = Synapses(IO_Uncoupled_STDP, conn_N_PC_Uncoupled, on_pre='''
                         input_dep = ((I_post/1e-9)/amp)/(clip((I_post/1e-9)/amp,(amplitude_post+offset_post),10)) 
-                        distribution_eval = y_post*(exp(-(freq_st_IO_uncoupled_post-mean_freq_IO_uncoupled_post)**2/((y_post-1)+2*std_f_IO_uncoupled_post**2))/((y_post-1)+std_f_IO_uncoupled_post*sqrt(2*pi)))
-                        distribution_mean = y_post*(exp(-(mean_freq_IO_uncoupled_post-mean_freq_IO_uncoupled_post)**2/((y_post-1)+2*std_f_IO_uncoupled_post**2))/((y_post-1)+std_f_IO_uncoupled_post*sqrt(2*pi)))
 
-                        freq_dep = (1/(1+exp(-k_freq*(f_st_PC_uncoupled_post-per_above_lt*f_lt_PC_uncoupled_post))))
-                        
-                        w_IO_uncoupled_post = (1/(1+exp(-200*(delta_weight_post+max_LTD_IO_uncoupled_post*weight_post/1.2))))
-
-                        max_LTD = y_post*((max_LTD_IO_uncoupled_post*weight_post)/(t_learn*1e2*mean_freq_IO_uncoupled_post+(y_post-1)))
-                        weight_IO_post += -max_LTD*w_IO_uncoupled_post*input_dep*freq_dep
+                        freq_dep_IO_post = (1/(1+exp(-k_freq*(f_st_PC_uncoupled_post-per_above_lt*f_lt_PC_uncoupled_post))))
+                                             
+                        max_LTD = y_post*((max_LTD_IO_uncoupled_post*new_weight_post)/(t_learn*1e2*mean_freq_IO_uncoupled_post+(y_post-1)))
+                        weight_IO_post += -max_LTD*w_IO_uncoupled_post*input_dep*freq_dep_IO_post
                           ''', 
                             method='euler',name = 'dummy_IO_Uncoupled',dt=t_Neuron)  # where f is some function
+
+#
+
   #                        -max_LTD*input_dep*freq_dep
 
 #y_post*distribution_eval/(distribution_mean+y_post-1)

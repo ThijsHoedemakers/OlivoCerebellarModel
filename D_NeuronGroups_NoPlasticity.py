@@ -19,7 +19,8 @@ for jj in range(0,N_Cells_PC,1):
     PC_Coupled_noSTDP.a[jj] = PC_a[jj]
     PC_Coupled_noSTDP.b[jj] = PC_b[jj]
     PC_Coupled_noSTDP.Vr[jj] = PC_Vr[jj]
-    PC_Coupled_noSTDP.I_Noise[jj] = 0.9*nA
+    # why is this one in the noSTDP but not in STDP?
+    #PC_Coupled_noSTDP.I_Noise[jj] = 0.9*nA
     PC_Coupled_noSTDP.v[jj] = PC_v[jj]
     PC_Coupled_noSTDP.I_intrinsic[jj] = PC_I_intrinsic[jj]
 PC_Statemon_Coupled_noSTDP = StateMonitor(PC_Coupled_noSTDP, ['v', 'w', 'I_Noise','I_intrinsic','tauw'], record=True,dt=t_Monitor)
@@ -97,7 +98,7 @@ for jj in range(0,N_Cells_PC,1):
     PC_Uncoupled_noSTDP.a[jj] = PC_a[jj]
     PC_Uncoupled_noSTDP.b[jj] = PC_b[jj]
     PC_Uncoupled_noSTDP.Vr[jj] = PC_Vr[jj]
-    PC_Uncoupled_noSTDP.I_Noise[jj] = 0.9*nA
+    #PC_Uncoupled_noSTDP.I_Noise[jj] = 0.9*nA
     PC_Uncoupled_noSTDP.v[jj] = PC_v[jj]
 PC_Uncoupled_noSTDP.I_intrinsic = PC_I_intrinsic
 PC_Statemon_Uncoupled_noSTDP = StateMonitor(PC_Uncoupled_noSTDP, ['v', 'w', 'I_Noise','I_intrinsic','tauw'], record=True,dt=t_Monitor)
