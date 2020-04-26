@@ -6,17 +6,20 @@ volt=list(globname)
 param = list(globname)
 spikes = list(globname)
 nois = list(globname)
+rates =list(globname)
 #add the new words
 nois.append('AfterSim_NoPlasticity.pickle')
 volt.append('_VoltageCell_NoPlasticity.pickle')
 param.append('_PlasticityVariables_NoPlasticity.pickle')
 spikes.append('_SpikeTimes_NoPlasticity.pickle')
+rates.append('_Population_FR_NoPlasticity.pickle')
 nois="".join(nois)
 volt="".join(volt)
 param="".join(param)
 spikes="".join(spikes)
+rates="".join(rates)
 
-Input={'I':Noise_statemon.I, 'nweight':S_statemon.noise_weight, 'I_InputPC':PC_Statemon_Coupled_noSTDP.I_Noise}
+Input={'I':Noise_extended_statemon.I, 'nweight':S_statemon.noise_weight, 'I_InputPC':PC_Statemon_Coupled_noSTDP.I_Noise}
 
 with open(nois, 'wb') as inp2:
     pickle.dump(Input, inp2, pickle.HIGHEST_PROTOCOL)
@@ -39,3 +42,9 @@ SpikeTimes = {'PC_coupled':list(PC_Spikemon_Coupled_noSTDP.spike_trains().values
 with open(spikes, 'wb') as st2:
     pickle.dump(SpikeTimes, st2, pickle.HIGHEST_PROTOCOL)
     print('Spike Times are saved')
+    
+Population_NoPlasticity = {'PC_uncoupled':PC_rate_Uncoupled_noSTDP.smooth_rate(window='gaussian', width=1*ms)/Hz, 'DCN_uncoupled':DCN_rate_Uncoupled_noSTDP.smooth_rate(window='gaussian',width=1*ms)/Hz, 'IO_uncoupled':IO_rate_Uncoupled_noSTDP.smooth_rate(window='gaussian',width=1*ms)/Hz,'PC_coupled':PC_rate_Coupled_noSTDP.smooth_rate(window='gaussian',width=1*ms)/Hz, 'DCN_coupled': DCN_rate_Coupled_noSTDP.smooth_rate(window='gaussian',width=1*ms)/Hz,'IO_coupled':IO_rate_Coupled_noSTDP.smooth_rate(window='gaussian',width=1*ms)/Hz,'t':PC_rate_Uncoupled_noSTDP.t/ms}
+
+with open(rates, 'wb') as ka:
+    pickle.dump(Population_NoPlasticity, ka, pickle.HIGHEST_PROTOCOL)
+    print('Population rates saved')

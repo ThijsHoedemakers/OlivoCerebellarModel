@@ -167,8 +167,8 @@ IO_synapse_Coupled_noSTDP.connect()
 #####################################################################
 S_Uncoupled_noSTDP = Synapses(Noise, PC_Uncoupled_noSTDP, eqs_syn_Noise_PC_noSTDP,name = 'PC_Noise_Synapse_Uncoupled_noSTDP',dt=t_Neuron)
 S_Uncoupled_noSTDP.connect()
-S_Uncoupled_noSTDP.noise_weight = 'abs(1-abs(i-j)/N_Cells_PC)'
-norm_coupled=S_Uncoupled_noSTDP.noise_weight[:].reshape(n_Noise,n_PC)
+#S_Uncoupled_noSTDP.noise_weight = 'abs(1-abs(i-j)/N_Cells_PC)'
+#norm_coupled=S_Uncoupled_noSTDP.noise_weight[:].reshape(n_Noise,n_PC)
 
 #print('reshaped weigth',norm_coupled)
 # calculate the sum of the column
