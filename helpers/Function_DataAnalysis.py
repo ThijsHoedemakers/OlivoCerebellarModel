@@ -23,7 +23,10 @@ def Slicing(data, t_start=None, t_end=None):
     output={}
     for label in data.keys():
         nrCell = len(data[label])
-        output[label] = [data[label][k][t_start:t_end] for k in range(0,nrCell)]
+        if nrCell > 1000:
+            output[label] = data[label][int(t_start/0.025):t_end]
+        else:
+            output[label] = [data[label][k][t_start:t_end] for k in range(0,nrCell)]
     
     return output
     
